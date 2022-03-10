@@ -1,2 +1,2 @@
 # toh-inventory
-Touch Of health clinic inventory management system
+Touch Of Health medical clinic inventory management system
