@@ -1,0 +1,20 @@
+{
+  "name": "tohinventory-backend",
+  "version": "1.0.0",
+  "description": "Touch Of Health medical clinic inventory management system back-end server",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "proxy": "http://localhost:8888",
+  "author": "Nazim Leulmi",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
+    "mongoose": "^6.2.5",
+    "nodemon": "^2.0.15",
+    "validator": "^13.7.0"
+  }
+}
