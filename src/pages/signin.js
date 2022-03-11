@@ -1,15 +1,17 @@
 import React from "react";
-import styled from 'styled-components';
+import s from 'styled-components';
 import DocSvg from '../assets/doctors.svg';
 import LogoSvg from '../assets/logo.svg';
+import Paper from '@mui/material/Paper';
+import { borderRadius, styled } from '@mui/system'
 
-const Container = styled.div`
+const Container = s.div`
   display:flex;
   flex-direction: row;
   background-color:white;
 `;
 
-const Introduction = styled.div`
+const Introduction = s.div`
     position: relative;
     height:100vh;
     flex:.9;
@@ -19,7 +21,7 @@ const Introduction = styled.div`
     background-color: rgba(0,0,0,.1);
 `;
 
-const Form = styled.div`
+const Form = s.div`
     flex:1;
     display:flex;
     flex-direction: column;
@@ -28,15 +30,15 @@ const Form = styled.div`
     padding:48px !important;
 `;
 
-const Doctors = styled.img`
+const Doctors = s.img`
     width:50%;
     margin-bottom:32px !important;
 `;
-const Header = styled.h1`
+const Header = s.h1`
     font-size: 48px;
     margin-bottom:16px !important;
 `;
-const Paragraph = styled.p`
+const Paragraph = s.p`
     font-weight: 300;
     font-size: 28px;
     margin:0 !important;
@@ -44,44 +46,18 @@ const Paragraph = styled.p`
     line-height: 32px;
 `;
 
-const Logo = styled.img`
+const Logo = s.img`
     margin-bottom:68px !important;
     width:50%;
 `;
 
-const InputContainer = styled.div`
-    position: relative;
-    width:50%;
-    display:flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin-bottom:10px;
-`;
+const StyledPaper = styled(Paper, {})({
+    backgroundColor: "papayawhip",
+    borderRadius: "5px",
+    width: "300px",
+    height: "300px",
+});
 
-const Input = styled.input`
-    padding:10px;
-    width:100%;
-    height:55px;
-    border:1px solid rgba(0,0,0,.4);
-    border-radius: 5px;
-    font-size:16px;
-    &:focus {
-        outline:none;
-        border:1px solid #0079F6 !important;
-    }
-`;
-const InputIcon = styled.span`
-    position:absolute;
-    font-size:30px;
-    font-weight:300;
-    bottom:0;
-    right:0;
-    margin-bottom:13.75px;
-    margin-right:5px;
-`;
-const Label = styled.label`
-    margin-bottom:10px;
-`;
 
 
 const Text = "Inventory management is vital to a company's" +
@@ -102,23 +78,7 @@ function SignIn() {
             </Introduction>
             <Form>
                 <Logo src={LogoSvg} />
-                <InputContainer>
-                    <Label>Username</Label>
-                    <Input type="text"
-                        name="username"
-                        value={username}
-                        onChange={e => setUsername(e.target.value)}
-                    />
-                </InputContainer>
-                <InputContainer>
-                    <Label>Password</Label>
-                    <Input type="password"
-                        name="password"
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                    />
-                    <InputIcon className="material-icons">&#xE87C;</InputIcon>
-                </InputContainer>
+                <StyledPaper />
             </Form>
         </Container>
     )
