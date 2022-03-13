@@ -9,17 +9,20 @@ export const Container = styled.div`
   display:flex;
   flex-direction: row;
   background-color:white;
+  position: relative;
 `;
 
 export const Introduction = styled.div`
-    position: relative;
+    position: fixed;
     height:100vh;
+    width:50vw;
     flex:.9;
     display:flex;
     flex-direction: column;
     background-color: rgba(0,0,0,.1);
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 `;
 
 
@@ -40,12 +43,15 @@ export const Paragraph = styled.p`
     line-height: 32px;
 `;
 export const Form = styled.div`
-    flex:1;
     display:flex;
+    width:50%;
+    position: absolute;
+    right:0;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     padding:48px !important;
+    overflow:auto;
 `;
 
 export const Logo = styled.img`

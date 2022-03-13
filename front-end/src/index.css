@@ -62,6 +62,8 @@ code {
     monospace;
 }
 
-.MuiOutlinedInput-input .MuiInputBase-input .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input{
-	height:300px !important;
+input[type=password]::-ms-reveal,
+input[type=password]::-ms-clear
+{
+    display: none;
 }

@@ -1,8 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-
-
+const validation = require('./validation');
+const models = require('./models');
+const bcrypt = require('bcrypt');
 
 let app = express();
 
@@ -17,15 +18,23 @@ async function connectDB() {
 }
 
 app.post("/signin", (req, res) => {
-    console.log("SignIn route");
-    console.log(req.body);
+    // const { isValid, errors } = validation.validateSignIn(req.body);
+    // if (!isValid) console.log(errors);
     return;
 })
 
-app.post("/signup", (req, res) => {
-    console.log("SignUp route");
-    console.log(req.body);
-    return;
+app.post("/signup", async (req, res) => {
+    const { isValid, errors } = validation.validateSignUp(req.body);
+    if (!isValid) return res.json({ isValid, errors });
+    const hash = await bcrypt.hash(req.body.password, 12);
+    const userModel = new models.UserModel({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        password: hash
+    })
+    const userEntry = await userModel.save();
+    return res.json({ success: true })
 })
 
 
