@@ -4,12 +4,19 @@ const cors = require('cors');
 const validation = require('./validation');
 const models = require('./models');
 const bcrypt = require('bcrypt');
+const session = require('express-session');
 
 let app = express();
 
 app.use(cors());
 app.use(express.json());
 
+app.use(session({
+    secret: 'my very important session secret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true, maxAge: 60000, sameSite: true }
+}))
 connectDB().catch(err => console.log(err));
 
 async function connectDB() {

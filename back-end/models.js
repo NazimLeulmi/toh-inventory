@@ -6,6 +6,7 @@ const userSchema = new Schema({
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    approved: { type: Boolean, default: false }
 })
 const processorSchema = new Schema({
     processorType: { type: String, required: true },
@@ -13,9 +14,11 @@ const processorSchema = new Schema({
     serialNumber: { type: String, required: true, unique: true },
     receivedFrom: { type: String, required: true },
     receivedDate: { type: Date, required: true },
-    delivered: { type: Boolean, default: false },
-    deliveredTo: { type: String },
-    deliveredDate: { type: Date },
+    delivery: {
+        delivered: { tpye: Boolean, default: false },
+        deliveredTo: { type: String },
+        deliveredDate: { type: Date },
+    }
 })
 
 const UserModel = mongoose.model('User', userSchema);
