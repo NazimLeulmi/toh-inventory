@@ -1,13 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import LogoSvg from '../assets/logo.svg';
-import { NavLink } from 'react-router-dom';
-import DocSvg from '../assets/doctors.svg';
 import Select from 'react-select';
-import { FormBtn, FormBtnText } from './signin';
-import { } from './signup';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import SideNav from './sidenav';
+import { FormBtn, FormBtnText } from './signin';
+import TopBar from './topbar';
 
 const Container = styled.div`
     width:100vw;
@@ -16,43 +14,7 @@ const Container = styled.div`
     flex-direction: row;
 `;
 
-const SideBar = styled.div`
-    width:450px;
-    height:100vh;
-    background-color: rgba(0,0,0,.05);
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-`;
 
-
-
-const BarLink = styled(NavLink)`
-    text-decoration: none;
-    height: 55px;
-    width:100%;
-    padding:20px;
-    display:flex;
-    align-items: center;
-    font-size: 20px;
-    color:black;
-    letter-spacing: 2px;
-    background-color:${props => props.isactive === "true" ? "rgba(0,0,0,.1)" : null};
-    :hover{
-        background-color: rgba(0,0,0,.1);
-    }
-    span {
-        color:${props => props.isactive === "true" ? "#0079F6" : null}
-    }
-
-`;
-export const LinkIcon = styled.span`
-    font-size:30px;
-    font-style: normal;
-    font-weight: 100;
-    color:rgba(0,0,0,.5);
-    margin-right:16px;
-`;
 const Dash = styled.div`
     display:flex;
     flex:1;
@@ -60,60 +22,7 @@ const Dash = styled.div`
     margin-left:450px;
     overflow-x: hidden;
 `;
-const Avatar = styled.div`
-    width:200px;
-    height:200px;
-    border-radius: 50%;
-    background-color: rgba(0,0,0,.1);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-    align-self: center;
-    margin-bottom:100px;
-    margin-top:50px;
-`;
 
-const Doctors = styled.img`
-    width:150px;
-    height:150px;
-`;
-
-const TopBar = styled.div`
-    width:100%;
-    height:100px;
-    min-height:100px;
-    background-color: rgba(0,0,0,.05);
-    display:flex;
-    align-items: center;
-`;
-const Logo = styled.img`
-    width:200px;
-    margin-left:16px;
-`;
-const User = styled.div`
-    width:65px;
-    height:65px;
-    border-radius: 50%;
-    background-color: rgba(0,0,0,.1);
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right:16px;
-`;
-const UserIcon = styled.span`
-    font-size:30px;
-    font-style: normal;
-    font-weight: 100;
-    color:rgba(0,0,0,.5);
-`;
-
-const UserName = styled.p`
-    font-size:20px;
-    margin-left:auto;
-    margin-right:16px;
-`;
 
 const Form = styled.div`
     display:flex;
@@ -189,11 +98,11 @@ const MySelect = styled(Select)`
 `;
 
 const selectStyles = {
-    control: base => ({
-        ...base,
-        height: 50,
-        minHeight: 50
-    })
+  control: base => ({
+    ...base,
+    height: 50,
+    minHeight: 50
+  })
 }
 export const InputContainer = styled.div`
     position: relative;
@@ -265,157 +174,132 @@ const Error = styled.p`
 
 
 function Dashboard() {
-    const [type, setType] = React.useState(null);
-    const [from, setFrom] = React.useState(null);
-    const [serial, setSerial] = React.useState('');
-    const [receipt, setReceipt] = React.useState('');
-    const [description, setDescription] = React.useState('');
-    const [errors, setErrors] = React.useState({});
-    const navigate = useNavigate();
-    const processors = [
-        { value: 'Cocklear N7', label: 'Cocklear N7' },
-        { value: 'Cocklear Kanso-2', label: 'Cocklear Kanso-2' },
-        { value: 'Baha-6 Max', label: 'Baha-6 Max' },
-        { value: 'Osia Implant', label: 'Osia Implant' },
-        { value: 'AB Naida C1 Q90', label: 'AB Naida C1 Q90' },
-    ];
+  const [type, setType] = React.useState(null);
+  const [from, setFrom] = React.useState(null);
+  const [serial, setSerial] = React.useState('');
+  const [receipt, setReceipt] = React.useState('');
+  const [description, setDescription] = React.useState('');
+  const [errors, setErrors] = React.useState({});
+  const navigate = useNavigate();
+  const location = useLocation();
+  const processors = [
+    { value: 'Cocklear N7', label: 'Cocklear N7' },
+    { value: 'Cocklear Kanso-2', label: 'Cocklear Kanso-2' },
+    { value: 'Baha-6 Max', label: 'Baha-6 Max' },
+    { value: 'Osia Implant', label: 'Osia Implant' },
+    { value: 'AB Naida C1 Q90', label: 'AB Naida C1 Q90' },
+  ];
 
-    const delivery = [
-        { value: 'Dubai', label: 'Dubai' },
-        { value: 'Abu Dhabi', label: 'Abu Dhabi' },
-    ]
-    function postProcessor() {
-        console.log("Posting ProcessorData");
-        axios.post('http://localhost:8888/processors', {
-            processor_type: type ? type.value : "",
-            receipt_from: from ? from.value : "",
-            description: description,
-            serial_number: serial, receipt_date: receipt
-        })
-            .then(function (response) {
-                const { data } = response;
-                console.log(data);
-                if (data.isValid === false) {
-                    setErrors(data.errors);
-                    return;
-                }
-                if (data.success === true) navigate('/processors');
-                return;
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
+  const delivery = [
+    { value: 'Dubai', label: 'Dubai' },
+    { value: 'Abu Dhabi', label: 'Abu Dhabi' },
+  ]
+  function postProcessor() {
+    console.log("Posting ProcessorData");
+    axios.post('http://localhost:8888/processors', {
+      processor_type: type ? type.value : "",
+      receipt_from: from ? from.value : "",
+      description: description,
+      serial_number: serial, receipt_date: receipt
+    })
+      .then(function (response) {
+        const { data } = response;
+        console.log(data);
+        if (data.isValid === false) {
+          setErrors(data.errors);
+          return;
+        }
+        if (data.success === true) navigate('/processors');
+        return;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
 
-    return (
-        <Container>
-            <SideBar>
-                <Avatar><Doctors src={DocSvg} /></Avatar>
-                <BarLink to="/dashboard" isactive="true">
-                    <LinkIcon className="material-icons">&#xe241;</LinkIcon>
-                    PROCESSORS FORM
-                </BarLink>
-                <BarLink to="/processors">
-                    <LinkIcon className="material-icons">&#xe322;</LinkIcon>
-                    PROCESSORS
-                </BarLink>
-                <BarLink to="/delivered">
-                    <LinkIcon className="material-icons">&#xe023;</LinkIcon>
-                    HEARING AIDS
-                </BarLink>
-                <BarLink to="/users">
-                    <LinkIcon className="material-icons">&#xe7ef;</LinkIcon>
-                    USERS
-                </BarLink>
-                <BarLink to="#" style={{ marginTop: "auto", marginBottom: 24 }}>
-                    <LinkIcon className="material-icons">&#xe9ba;</LinkIcon>
-                    SIGN OUT
-                </BarLink>
-            </SideBar>
-            <Dash>
-                <TopBar>
-                    <Logo src={LogoSvg} />
-                    <UserName>Rayan Leulmi</UserName>
-                    <User><UserIcon className="material-icons">&#xe7fd;</UserIcon></User>
-                </TopBar>
-                <FlexContainer>
-                    <Form>
-                        <FormHeader>Sound Processors</FormHeader>
-                        <InputContainer>
-                            <Label>Processor Type</Label>
-                            <MySelect
-                                defaultValue={type}
-                                onChange={setType}
-                                options={processors}
-                                styles={selectStyles}
-                            />
-                            {errors.processor_type && <Error>{errors.processor_type}</Error>}
-                        </InputContainer>
-                        <InputContainer>
-                            <Label>Processor description</Label>
-                            <TextArea type="text"
-                                name="description"
-                                value={description}
-                                onChange={e => setDescription(e.target.value)}
-                                placeholder="Brief description"
-                            />
-                            {errors.description && <Error>{errors.description}</Error>}
-                        </InputContainer>
-                        <InputContainer>
-                            <Label>Serial Number</Label>
-                            <Input type="number"
-                                name="serial"
-                                value={serial}
-                                onChange={e => setSerial(e.target.value)}
-                                placeholder="Enter the serial number"
-                            />
-                            {errors.serial_number && <Error>{errors.serial_number}</Error>}
-                        </InputContainer>
-                        <InputContainer>
-                            <Label>Receipt From</Label>
-                            <MySelect
-                                defaultValue={from}
-                                onChange={setFrom}
-                                options={delivery}
-                                styles={selectStyles}
-                            />
-                            {errors.receipt_from && <Error>{errors.receipt_from}</Error>}
-                        </InputContainer>
-                        <InputContainer>
-                            <Label>Receipt Date</Label>
-                            <Input type="text"
-                                name="recieptDate"
-                                value={receipt}
-                                onChange={e => setReceipt(e.target.value)}
-                                placeholder="DD/MM/YYYY"
-                            />
-                            {errors.receipt_date && <Error>{errors.receipt_date}</Error>}
-                        </InputContainer>
-                        <Btn onClick={() => postProcessor()}>
-                            <FormBtnText>SAVE PROCESSOR</FormBtnText>
-                        </Btn>
-                    </Form>
-                    <BoxesContainer>
-                        <Box>
-                            <BoxIcon className="material-icons">&#xe558;</BoxIcon>
-                            <BoxHeader>DELIVERED</BoxHeader>
-                            <BoxNumber>16</BoxNumber>
-                        </Box>
-                        <Box>
-                            <BoxIcon className="material-icons">&#xe179;</BoxIcon>
-                            <BoxHeader>STOCK</BoxHeader>
-                            <BoxNumber>4</BoxNumber>
-                        </Box>
-                        <Box>
-                            <BoxIcon className="material-icons">&#xe023;</BoxIcon>
-                            <BoxHeader>TOTAL</BoxHeader>
-                            <BoxNumber>20</BoxNumber>
-                        </Box>
-                    </BoxesContainer>
-                </FlexContainer>
-            </Dash>
-        </Container>
-    )
+  return (
+    <Container>
+      <SideNav location={location.pathname} />
+      <Dash>
+        <TopBar />
+        <FlexContainer>
+          <Form>
+            <FormHeader>Sound Processors</FormHeader>
+            <InputContainer>
+              <Label>Processor Type</Label>
+              <MySelect
+                defaultValue={type}
+                onChange={setType}
+                options={processors}
+                styles={selectStyles}
+              />
+              {errors.processor_type && <Error>{errors.processor_type}</Error>}
+            </InputContainer>
+            <InputContainer>
+              <Label>Processor description</Label>
+              <TextArea type="text"
+                name="description"
+                value={description}
+                onChange={e => setDescription(e.target.value)}
+                placeholder="Brief description"
+              />
+              {errors.description && <Error>{errors.description}</Error>}
+            </InputContainer>
+            <InputContainer>
+              <Label>Serial Number</Label>
+              <Input type="number"
+                name="serial"
+                value={serial}
+                onChange={e => setSerial(e.target.value)}
+                placeholder="Enter the serial number"
+              />
+              {errors.serial_number && <Error>{errors.serial_number}</Error>}
+            </InputContainer>
+            <InputContainer>
+              <Label>Receipt From</Label>
+              <MySelect
+                defaultValue={from}
+                onChange={setFrom}
+                options={delivery}
+                styles={selectStyles}
+              />
+              {errors.receipt_from && <Error>{errors.receipt_from}</Error>}
+            </InputContainer>
+            <InputContainer>
+              <Label>Receipt Date</Label>
+              <Input type="text"
+                name="recieptDate"
+                value={receipt}
+                onChange={e => setReceipt(e.target.value)}
+                placeholder="DD/MM/YYYY"
+              />
+              {errors.receipt_date && <Error>{errors.receipt_date}</Error>}
+            </InputContainer>
+            <Btn onClick={() => postProcessor()}>
+              <FormBtnText>SAVE PROCESSOR</FormBtnText>
+            </Btn>
+          </Form>
+          <BoxesContainer>
+            <Box>
+              <BoxIcon className="material-icons">&#xe558;</BoxIcon>
+              <BoxHeader>DELIVERED</BoxHeader>
+              <BoxNumber>16</BoxNumber>
+            </Box>
+            <Box>
+              <BoxIcon className="material-icons">&#xe179;</BoxIcon>
+              <BoxHeader>STOCK</BoxHeader>
+              <BoxNumber>4</BoxNumber>
+            </Box>
+            <Box>
+              <BoxIcon className="material-icons">&#xe023;</BoxIcon>
+              <BoxHeader>TOTAL</BoxHeader>
+              <BoxNumber>20</BoxNumber>
+            </Box>
+          </BoxesContainer>
+        </FlexContainer>
+      </Dash>
+    </Container>
+  )
 }
 
 export default Dashboard;
