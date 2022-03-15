@@ -2,22 +2,22 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
+    first_name: { type: String, required: true },
+    last_name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     approved: { type: Boolean, default: false }
 })
 const processorSchema = new Schema({
-    processorType: { type: String, required: true },
+    processor_type: { type: String, required: true },
     description: { type: String, required: false },
-    serialNumber: { type: String, required: true, unique: true },
-    receivedFrom: { type: String, required: true },
-    receivedDate: { type: Date, required: true },
+    serial_number: { type: Number, required: true, unique: true },
+    receipt_from: { type: String, required: true },
+    receipt_date: { type: String, required: true },
     delivery: {
-        delivered: { tpye: Boolean, default: false },
-        deliveredTo: { type: String },
-        deliveredDate: { type: Date },
+        delivered: { type: Boolean, default: false },
+        delivered_to: { type: String, default: null },
+        delivered_date: { type: String, default: null },
     }
 })
 

@@ -57,7 +57,49 @@ function validateSignUp(data) {
     const errorsString = errors.email + errors.password + errors.firstName + errors.lastName + errors.passwordc;
     return { isValid: errorsString === "" ? true : false, errors }
 }
+function validateProcessor(data) {
+    console.log(data);
+    const { processor_type, receipt_from, receipt_date, description, serial_number } = data;
+    const errors = {
+        processor_type: "", receipt_from: "", receipt_date: "",
+        description: "", serial_number: ""
+    };
+    // Processor type validation
+    if (processor_type === "" || processor_type === null || processor_type === undefined) {
+        errors.processor_type = "The processor type is required";
+    }
+    // Receipt location validation
+    if (receipt_from === "" || receipt_from === null || receipt_from === undefined) {
+        errors.receipt_from = "The receipt location is required";
+    }
+    // Receipt date validation
+    if (receipt_date === "" || receipt_date === null || receipt_date === undefined) {
+        errors.receipt_date = "The receipt date is required";
+    }
+    else if (/^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/
+        .test(receipt_date) === false) {
+        errors.receipt_date = "Date format has to be DD/MM/YYYY";
+    }
+    // Description validation
+    if (description === "" || description === null || description === undefined) {
+        errors.description = "The description date is required";
+    }
+    // Serial number validation
+    if (serial_number === "" || serial_number === null || serial_number === undefined) {
+        errors.serial_number = "The serial number is required";
+    }
+    else if (!validator.isNumeric(serial_number)) {
+        errors.receipt_from = "The serial number must contain only numbers";
+    }
 
-module.exports = { validateSignIn, validateSignUp }
+
+    console.log("Processor form validation");
+    const errorsString = errors.receipt_from + errors.receipt_date + errors.description +
+        errors.serial_number + errors.processor_type;
+    return { isValid: errorsString === "" ? true : false, errors }
+}
+
+
+module.exports = { validateSignIn, validateSignUp, validateProcessor }
 
 

@@ -30,18 +30,35 @@ app.post("/signin", (req, res) => {
     return;
 })
 
-app.post("/signup", async (req, res) => {
-    const { isValid, errors } = validation.validateSignUp(req.body);
+// app.post("/signup", async (req, res) => {
+//     const { isValid, errors } = validation.validateSignUp(req.body);
+//     if (!isValid) return res.json({ isValid, errors });
+//     const hash = await bcrypt.hash(req.body.password, 12);
+//     const userModel = new models.UserModel({
+//         firstName: req.body.firstName,
+//         lastName: req.body.lastName,
+//         email: req.body.email,
+//         password: hash
+//     })
+//     const userEntry = await userModel.save();
+//     return res.json({ success: true })
+// })
+
+app.post("/processors", async (req, res) => {
+    const { isValid, errors } = validation.validateProcessor(req.body);
     if (!isValid) return res.json({ isValid, errors });
-    const hash = await bcrypt.hash(req.body.password, 12);
-    const userModel = new models.UserModel({
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        password: hash
+    const processor = await models.ProcessorModel.findOne({ serial_number: req.body.serial_number })
+        .catch(error => console.log(err));
+    if (processor) return res.json({ isValid: false, errors: { serial_number: "Duplicate serial number" } })
+    const processorModel = new models.ProcessorModel({
+        processor_type: req.body.processor_type,
+        description: req.body.description,
+        receipt_from: req.body.receipt_from,
+        receipt_date: req.body.receipt_date,
+        serial_number: req.body.serial_number,
     })
-    const userEntry = await userModel.save();
-    return res.json({ success: true })
+    const processorEntry = await processorModel.save();
+    return res.json({ success: true, processor: processorEntry })
 })
 
 
