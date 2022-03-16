@@ -2,6 +2,7 @@
   "name": "tohinventory",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://192.168.56.1:8888",
   "dependencies": {
     "@emotion/react": "^11.8.2",
     "@emotion/styled": "^11.8.1",

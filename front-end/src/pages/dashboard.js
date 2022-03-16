@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import Select from 'react-select';
 import axios from 'axios';
@@ -6,6 +6,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import SideNav from './sidenav';
 import { FormBtn, FormBtnText } from './signin';
 import TopBar from './topbar';
+import { AuthContext } from '../App';
 
 const Container = styled.div`
     width:100vw;
@@ -182,6 +183,7 @@ function Dashboard() {
   const [errors, setErrors] = React.useState({});
   const navigate = useNavigate();
   const location = useLocation();
+  const { auth, setAuth } = useContext(AuthContext);
   const processors = [
     { value: 'Cocklear N7', label: 'Cocklear N7' },
     { value: 'Cocklear Kanso-2', label: 'Cocklear Kanso-2' },
@@ -216,6 +218,19 @@ function Dashboard() {
         console.log(error);
       });
   }
+
+  async function checkAuth() {
+    try {
+      const response = await axios.get("http://localhost:8888/check-auth");
+      const { data } = response;
+      if (data.success === true) setAuth(data.user);
+      else navigate("/");
+    } catch (error) { console.log(error) }
+  }
+
+  useEffect(() => {
+    checkAuth();
+  }, [])
 
   return (
     <Container>

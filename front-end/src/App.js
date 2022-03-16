@@ -7,18 +7,30 @@ import SignIn from "./pages/signin";
 import SignUp from "./pages/signup";
 import Processors from "./pages/processors";
 import HearingAids from "./pages/hearing";
+import axios from "axios";
 
+// Send cookies with http requests
+axios.defaults.withCredentials = true
+
+
+
+export const AuthContext = React.createContext();
 
 function App() {
+  const [auth, setAuth] = React.useState(null);
+  const authProviderValue = React.useMemo(() => ({ auth, setAuth }), [auth, setAuth])
+
   return (
     <Router>
-      <Routes>
-        <Route exact path="/" element={<SignIn />} />
-        <Route exact path="/signup" element={<SignUp />} />
-        <Route exact path="/dashboard" element={<Dashboard />} />
-        <Route exact path="/processors" element={<Processors />} />
-        <Route exact path="/hearing_aids" element={<HearingAids />} />
-      </Routes>
+      <AuthContext.Provider value={authProviderValue}>
+        <Routes>
+          <Route exact path="/" element={<SignIn />} />
+          <Route exact path="/signup" element={<SignUp />} />
+          <Route exact path="/dashboard" element={<Dashboard />} />
+          <Route exact path="/processors" element={<Processors />} />
+          <Route exact path="/hearing_aids" element={<HearingAids />} />
+        </Routes>
+      </AuthContext.Provider>
     </Router>
   )
 }

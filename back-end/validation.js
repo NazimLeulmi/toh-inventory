@@ -18,11 +18,11 @@ function validateSignIn(data) {
     }
     console.log("Sign-in form validation");
     const errorsString = errors.email + errors.password;
-    return { isValid: errorsString === "" ? true : false, }
+    return { isValid: errorsString === "" ? true : false, errors }
 }
 function validateSignUp(data) {
-    const { email, password, passwordc, firstName, lastName } = data;
-    const errors = { email: "", password: "", passwordc: "", firstName: "", lastName: "" };
+    const { email, password, passwordc, first_name, last_name } = data;
+    const errors = { email: "", password: "", passwordc: "", first_name: "", last_name: "" };
     // Email input validation
     if (email === "" || email === null || email === undefined) {
         errors.email = " The email address is required";
@@ -30,16 +30,16 @@ function validateSignUp(data) {
         errors.email = "The email address is invalid";
     }
     // First name input validation
-    if (firstName === "" || firstName === null || firstName === undefined) {
-        errors.firstName = "The first name is required";
-    } else if (!validator.isAlpha(firstName)) {
-        errors.firstName = "The first name must contain only letters";
+    if (first_name === "" || first_name === null || first_name === undefined) {
+        errors.first_name = "The first name is required";
+    } else if (!validator.isAlpha(first_name)) {
+        errors.first_name = "The first name must contain only letters";
     }
     // Last name input validation
-    if (lastName === "" || lastName === null || lastName === undefined) {
-        errors.lastName = "The last name is required";
-    } else if (!validator.isAlpha(lastName)) {
-        errors.lastName = "The last name must contain only letters";
+    if (last_name === "" || last_name === null || last_name === undefined) {
+        errors.last_name = "The last name is required";
+    } else if (!validator.isAlpha(last_name)) {
+        errors.last_name = "The last name must contain only letters";
     }
     // Password input validation
     if (password === "" || password === null || password === undefined) {
@@ -54,7 +54,7 @@ function validateSignUp(data) {
     if (!validator.equals(password, passwordc)) {
         errors.passwordc = "The password confirmation doesn't match";
     }
-    const errorsString = errors.email + errors.password + errors.firstName + errors.lastName + errors.passwordc;
+    const errorsString = errors.email + errors.password + errors.first_name + errors.last_name + errors.passwordc;
     return { isValid: errorsString === "" ? true : false, errors }
 }
 function validateProcessor(data) {

@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from 'styled-components';
 import DocSvg from '../assets/doctors.svg';
 import LogoSvg from '../assets/logo.svg';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { Error } from './signup';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from "../App";
 
 export const Container = styled.div`
   display:flex;
@@ -148,65 +151,70 @@ export const FormLink = styled(Link)`
 `;
 
 export const Text = "Inventory management is vital to a company's" +
-    " health because it helps make sure there is rarely too much" +
-    " or too little stock on hand, limiting the risk of stockouts" +
-    " and inaccurate records";
+  " health because it helps make sure there is rarely too much" +
+  " or too little stock on hand, limiting the risk of stockouts" +
+  " and inaccurate records";
 
 
 
 
 function SignIn() {
-    const [email, setEmail] = React.useState('')
-    const [password, setPassword] = React.useState('')
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [errors, setErrors] = React.useState({});
+  const navigate = useNavigate();
+  const { auth, setAuth } = useContext(AuthContext);
 
-    function postUserData() {
-        console.log("Posting User Data");
-        axios.post('http://localhost:8888/signin', {
-            email: email,
-            password: password
-        })
-            .then(function (response) {
-                console.log(response);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
-    return (
-        <Container>
-            <Introduction>
-                <Doctors src={DocSvg} />
-                <Header>Inventory Management</Header>
-                <Paragraph>{Text}</Paragraph>
-            </Introduction>
-            <Form>
-                <Logo src={LogoSvg} />
-                <FormHeader>Enter your email and password</FormHeader>
-                {/* Email Input */}
-                <InputContainer>
-                    <Label>Email Address</Label>
-                    <Input type="email"
-                        name="email" value={email} required
-                        onChange={e => setEmail(e.target.value)}
-                        placeholder="Enter your email address"
-                    />
-                    <InputIcon className="material-icons">&#xe158;</InputIcon>
-                </InputContainer>
-                <InputContainer>
-                    <Label>Password</Label>
-                    <Input type="password"
-                        name="password"
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                        placeholder="Enter your password"
-                    />
-                    <InputIcon className="material-icons">&#xe897;</InputIcon>
-                </InputContainer>
-                <FormBtn onClick={() => postUserData()}><FormBtnText>SIGN IN</FormBtnText></FormBtn>
-                <FormLink to="/signup">Don't have an account ? <span>SIGN UP</span></FormLink>
-            </Form>
-        </Container>
-    )
+  async function postUserData() {
+    console.log("Posting User Data");
+    try {
+      const response = await axios.post("http://localhost:8888/signin", {
+        email: email, password: password
+      })
+      const { data } = response;
+      if (data.isValid === false) setErrors(data.errors);
+      else if (data.success === true) {
+        setAuth(data.user); navigate("/dashboard");
+      }
+    } catch (error) { console.log(error) }
+  }
+  return (
+    <Container>
+      <Introduction>
+        <Doctors src={DocSvg} />
+        <Header>Inventory Management</Header>
+        <Paragraph>{Text}</Paragraph>
+      </Introduction>
+      <Form>
+        <Logo src={LogoSvg} />
+        <FormHeader>Enter your email and password</FormHeader>
+        {/* Email Input */}
+        <InputContainer>
+          <Label>Email Address</Label>
+          <Input type="email"
+            name="email" value={email} required
+            onChange={e => setEmail(e.target.value)}
+            placeholder="Enter your email address"
+          />
+          <InputIcon className="material-icons">&#xe158;</InputIcon>
+        </InputContainer>
+        {errors.email && <Error>{"- " + errors.email}</Error>}
+        <InputContainer>
+          <Label>Password</Label>
+          <Input type="password"
+            name="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            placeholder="Enter your password"
+          />
+          <InputIcon className="material-icons">&#xe897;</InputIcon>
+        </InputContainer>
+        {errors.password && <Error>{"- " + errors.password}</Error>}
+        <FormBtn onClick={() => postUserData()}><FormBtnText>SIGN IN</FormBtnText></FormBtn>
+        <FormLink to="/signup">Don't have an account ? <span>SIGN UP</span></FormLink>
+      </Form>
+    </Container>
+  )
 }
 
 export default SignIn;

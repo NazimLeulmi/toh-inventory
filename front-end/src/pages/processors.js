@@ -76,7 +76,6 @@ const PrintText = styled.p`
 `;
 
 
-
 function Processors() {
     const location = useLocation();
     function handlePrint() {
