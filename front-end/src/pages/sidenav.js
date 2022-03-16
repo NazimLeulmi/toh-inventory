@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
+import { Link, Navigate, NavLink, useNavigate } from 'react-router-dom';
 import DocSvg from '../assets/doctors.svg';
+import axios from 'axios';
+import { AuthContext } from '../App';
 
 
 const SideBar = styled.div`
@@ -42,7 +44,7 @@ export const LinkIcon = styled.span`
     color:rgba(0,0,0,.5);
     margin-right:16px;
 `;
-const Avatar = styled.div`
+const Avatar = styled(Link)`
     width:200px;
     height:200px;
     border-radius: 50%;
@@ -54,6 +56,7 @@ const Avatar = styled.div`
     align-self: center;
     margin-bottom:100px;
     margin-top:50px;
+    text-decoration: none;
 `;
 
 const Doctors = styled.img`
@@ -64,9 +67,19 @@ const Doctors = styled.img`
 
 
 function SideNav({ location }) {
+
+    const { auth, setAuth } = React.useContext(AuthContext);
+    const navigate = useNavigate();
+
+    async function signOut() {
+        const response = await axios.post("http://localhost:8888/signout");
+        const { data } = response;
+        if (data.success === true) setAuth(null); navigate("/");
+    }
+
     return (
         <SideBar>
-            <Avatar><Doctors src={DocSvg} /></Avatar>
+            <Avatar to="/"><Doctors src={DocSvg} /></Avatar>
             <BarLink to="/dashboard" location={location} link="/dashboard" >
                 <LinkIcon className="material-icons">&#xe241;</LinkIcon>
                 PROCESSORS FORM
@@ -83,8 +96,8 @@ function SideNav({ location }) {
                 <LinkIcon className="material-icons">&#xe7ef;</LinkIcon>
                 USERS
             </BarLink>
-            <BarLink to="#" style={{ marginTop: "auto", marginBottom: 24 }}
-                location={location} link=""
+            <BarLink to="" style={{ marginTop: "auto", marginBottom: 24 }}
+                location={location} link="" onClick={() => signOut()}
             >
                 <LinkIcon className="material-icons">&#xe9ba;</LinkIcon>
                 SIGN OUT

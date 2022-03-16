@@ -5,6 +5,8 @@ import SideNav from "./sidenav";
 import Bar from './topbar';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import axios from 'axios';
+import { ProcessorsContext } from '../App';
 
 
 
@@ -44,6 +46,7 @@ const Data = styled.td`
     padding:15px;
     border:1px solid rgba(0,0,0,.3);
     text-align: center;
+    line-height: 20px;
 `;
 
 const Header = styled.div`
@@ -77,160 +80,52 @@ const PrintText = styled.p`
 
 
 function Processors() {
-    const location = useLocation();
-    function handlePrint() {
-        const doc = new jsPDF();
-        doc.autoTable({ html: '#processors-table', theme: "grid" })
-        doc.save('table.pdf');
-    }
-    return (
-        <Container>
-            <SideNav location={location.pathname} />
-            <Content>
-                <Bar />
-                <Header>
-                    <TableTitle>Processors Table</TableTitle>
-                    <PrintBtn onClick={() => handlePrint()}>
-                        <PrintText>PRINT TABLE</PrintText>
-                    </PrintBtn>
-                </Header>
-                <Table id="processors-table" >
-                    <TableHead>
-                        <TableRow>
-                            <Data>TYPE</Data>
-                            <Data>SERIAL_NUMBER</Data>
-                            <Data>RECEIPT_FROM</Data>
-                            <Data>RECEIPT_DATE</Data>
-                            <Data>DELIVERED</Data>
-                        </TableRow>
-                    </TableHead>
-                    <tbody>
-                        <TableRow>
-                            <Data>KANZO-2</Data>
-                            <Data>23456788</Data>
-                            <Data>DUBAI</Data>
-                            <Data>23/07/2021</Data>
-                            <Data>FALSE</Data>
-                        </TableRow>
-                        <TableRow>
-                            <Data>KANZO-2</Data>
-                            <Data>23456788</Data>
-                            <Data>DUBAI</Data>
-                            <Data>23/07/2021</Data>
-                            <Data>FALSE</Data>
-                        </TableRow>
-                        <TableRow>
-                            <Data>KANZO-2</Data>
-                            <Data>23456788</Data>
-                            <Data>DUBAI</Data>
-                            <Data>23/07/2021</Data>
-                            <Data>FALSE</Data>
-                        </TableRow>
-                        <TableRow>
-                            <Data>KANZO-2</Data>
-                            <Data>23456788</Data>
-                            <Data>DUBAI</Data>
-                            <Data>23/07/2021</Data>
-                            <Data>FALSE</Data>
-                        </TableRow>                       <TableRow>
-                            <Data>KANZO-2</Data>
-                            <Data>23456788</Data>
-                            <Data>DUBAI</Data>
-                            <Data>23/07/2021</Data>
-                            <Data>FALSE</Data>
-                        </TableRow>                       <TableRow>
-                            <Data>KANZO-2</Data>
-                            <Data>23456788</Data>
-                            <Data>DUBAI</Data>
-                            <Data>23/07/2021</Data>
-                            <Data>FALSE</Data>
-                        </TableRow>             <TableRow>
-                            <Data>KANZO-2</Data>
-                            <Data>23456788</Data>
-                            <Data>DUBAI</Data>
-                            <Data>23/07/2021</Data>
-                            <Data>FALSE</Data>
-                        </TableRow>                       <TableRow>
-                            <Data>KANZO-2</Data>
-                            <Data>23456788</Data>
-                            <Data>DUBAI</Data>
-                            <Data>23/07/2021</Data>
-                            <Data>FALSE</Data>
-                        </TableRow>                       <TableRow>
-                            <Data>KANZO-2</Data>
-                            <Data>23456788</Data>
-                            <Data>DUBAI</Data>
-                            <Data>23/07/2021</Data>
-                            <Data>FALSE</Data>
-                        </TableRow>                       <TableRow>
-                            <Data>KANZO-2</Data>
-                            <Data>23456788</Data>
-                            <Data>DUBAI</Data>
-                            <Data>23/07/2021</Data>
-                            <Data>FALSE</Data>
-                        </TableRow>                       <TableRow>
-                            <Data>KANZO-2</Data>
-                            <Data>23456788</Data>
-                            <Data>DUBAI</Data>
-                            <Data>23/07/2021</Data>
-                            <Data>FALSE</Data>
-                        </TableRow>                       <TableRow>
-                            <Data>KANZO-2</Data>
-                            <Data>23456788</Data>
-                            <Data>DUBAI</Data>
-                            <Data>23/07/2021</Data>
-                            <Data>FALSE</Data>
-                        </TableRow>                       <TableRow>
-                            <Data>KANZO-2</Data>
-                            <Data>23456788</Data>
-                            <Data>DUBAI</Data>
-                            <Data>23/07/2021</Data>
-                            <Data>FALSE</Data>
-                        </TableRow>                       <TableRow>
-                            <Data>KANZO-2</Data>
-                            <Data>23456788</Data>
-                            <Data>DUBAI</Data>
-                            <Data>23/07/2021</Data>
-                            <Data>FALSE</Data>
-                        </TableRow>                     <TableRow>
-                            <Data>KANZO-2</Data>
-                            <Data>23456788</Data>
-                            <Data>DUBAI</Data>
-                            <Data>23/07/2021</Data>
-                            <Data>FALSE</Data>
-                        </TableRow>                       <TableRow>
-                            <Data>KANZO-2</Data>
-                            <Data>23456788</Data>
-                            <Data>DUBAI</Data>
-                            <Data>23/07/2021</Data>
-                            <Data>FALSE</Data>
-                        </TableRow>
-                        <TableRow>
-                            <Data>KANZO-2</Data>
-                            <Data>23456788</Data>
-                            <Data>DUBAI</Data>
-                            <Data>23/07/2021</Data>
-                            <Data>FALSE</Data>
-                        </TableRow>
-                        <TableRow>
-                            <Data>KANZO-2</Data>
-                            <Data>23456788</Data>
-                            <Data>DUBAI</Data>
-                            <Data>23/07/2021</Data>
-                            <Data>FALSE</Data>
-                        </TableRow>
-                        <TableRow>
-                            <Data>KANZO-2</Data>
-                            <Data>23456788</Data>
-                            <Data>DUBAI</Data>
-                            <Data>23/07/2021</Data>
-                            <Data>FALSE</Data>
-                        </TableRow>
-                    </tbody>
-                </Table>
-            </Content>
-        </Container>
-    )
+  const { processors, setProcessors } = React.useContext(ProcessorsContext);
+
+  const location = useLocation();
+  function handlePrint() {
+    const doc = new jsPDF();
+    doc.autoTable({ html: '#processors-table', theme: "grid" })
+    doc.save('table.pdf');
+  }
+
+
+  return (
+    <Container>
+      <SideNav location={location.pathname} />
+      <Content>
+        <Bar />
+        <Header>
+          <TableTitle>Processors Table</TableTitle>
+          <PrintBtn onClick={() => handlePrint()}>
+            <PrintText>PRINT TABLE</PrintText>
+          </PrintBtn>
+        </Header>
+        <Table id="processors-table" >
+          <TableHead>
+            <TableRow>
+              <Data>TYPE</Data>
+              <Data>SERIAL_NUMBER</Data>
+              <Data>DESCRIPTION</Data>
+              <Data>RECEIPT_FROM</Data>
+              <Data>RECEIPT_DATE</Data>
+              <Data>DELIVERED</Data>
+            </TableRow>
+          </TableHead>
+          <tbody>
+            <TableRow>
+              <Data>BAHA-6 SOUND PROCESSOR</Data>
+              <Data>23456788</Data>
+              <Data>SOME DESCRIPTION ABOUT THE SOUND PROCESSOR</Data>
+              <Data>DUBAI</Data>
+              <Data>23/07/2021</Data>
+              <Data>FALSE</Data>
+            </TableRow>
+          </tbody>
+        </Table>
+      </Content>
+    </Container>
+  )
 }
 
 

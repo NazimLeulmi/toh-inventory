@@ -15,21 +15,26 @@ axios.defaults.withCredentials = true
 
 
 export const AuthContext = React.createContext();
+export const ProcessorsContext = React.createContext();
 
 function App() {
   const [auth, setAuth] = React.useState(null);
+  const [processors, setProcessors] = React.useState([]);
   const authProviderValue = React.useMemo(() => ({ auth, setAuth }), [auth, setAuth])
+  const processorsProviderValue = React.useMemo(() => ({ processors, setProcessors }), [processors, setProcessors])
 
   return (
     <Router>
       <AuthContext.Provider value={authProviderValue}>
-        <Routes>
-          <Route exact path="/" element={<SignIn />} />
-          <Route exact path="/signup" element={<SignUp />} />
-          <Route exact path="/dashboard" element={<Dashboard />} />
-          <Route exact path="/processors" element={<Processors />} />
-          <Route exact path="/hearing_aids" element={<HearingAids />} />
-        </Routes>
+        <ProcessorsContext.Provider value={processorsProviderValue}>
+          <Routes>
+            <Route exact path="/" element={<SignIn />} />
+            <Route exact path="/signup" element={<SignUp />} />
+            <Route exact path="/dashboard" element={<Dashboard />} />
+            <Route exact path="/processors" element={<Processors />} />
+            <Route exact path="/hearing_aids" element={<HearingAids />} />
+          </Routes>
+        </ProcessorsContext.Provider>
       </AuthContext.Provider>
     </Router>
   )

@@ -84,7 +84,13 @@ app.get("/check-auth", async (req, res) => {
     console.log("User NOT signed in");
     return res.json({ success: false })
   }
+})
 
+app.post("/signout", async (req, res) => {
+  req.session.destroy(err => {
+    if (err) return res.json({ success: false })
+    else return res.json({ success: true })
+  });
 })
 
 app.post("/processors", async (req, res) => {
@@ -102,6 +108,13 @@ app.post("/processors", async (req, res) => {
   })
   const processorEntry = await processorModel.save();
   return res.json({ success: true, processor: processorEntry })
+})
+
+app.get("/processors", async (req, res) => {
+  try {
+    const processors = await models.ProcessorModel.find();
+    return res.json({ processors });
+  } catch (err) { console.log(err) }
 })
 
 

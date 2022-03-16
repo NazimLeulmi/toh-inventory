@@ -178,6 +178,19 @@ function SignIn() {
       }
     } catch (error) { console.log(error) }
   }
+  async function checkAuth() {
+    try {
+      const response = await axios.get("http://localhost:8888/check-auth");
+      const { data } = response;
+      if (data.success === true) {
+        setAuth(data.user); navigate("/dashboard"); return;
+      }
+    } catch (error) { console.log(error) }
+  }
+
+  React.useEffect(() => {
+    checkAuth();
+  }, [])
   return (
     <Container>
       <Introduction>

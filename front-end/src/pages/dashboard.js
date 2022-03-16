@@ -172,8 +172,6 @@ const Error = styled.p`
 
 
 
-
-
 function Dashboard() {
   const [type, setType] = React.useState(null);
   const [from, setFrom] = React.useState(null);
