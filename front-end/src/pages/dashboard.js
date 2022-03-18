@@ -6,7 +6,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import SideNav from './sidenav';
 import { FormBtn, FormBtnText } from './signin';
 import TopBar from './topbar';
-import { AuthContext } from '../App';
+import { AuthContext, ProcessorsContext } from '../App';
 
 const Container = styled.div`
     width:100vw;
@@ -88,17 +88,17 @@ const BoxNumber = styled.h3`
 `;
 
 
-const Label = styled.label`
+export const Label = styled.label`
     font-size:16px;
     width:400px;
     margin-bottom:10px;
 `;
 
-const MySelect = styled(Select)`
+export const MySelect = styled(Select)`
     width:400px;
 `;
 
-const selectStyles = {
+export const selectStyles = {
   control: base => ({
     ...base,
     height: 50,
@@ -182,7 +182,8 @@ function Dashboard() {
   const navigate = useNavigate();
   const location = useLocation();
   const { auth, setAuth } = useContext(AuthContext);
-  const processors = [
+  const { processors, setProcessors } = useContext(ProcessorsContext);
+  const processorOptions = [
     { value: 'Cocklear N7', label: 'Cocklear N7' },
     { value: 'Cocklear Kanso-2', label: 'Cocklear Kanso-2' },
     { value: 'Baha-6 Max', label: 'Baha-6 Max' },
@@ -194,27 +195,24 @@ function Dashboard() {
     { value: 'Dubai', label: 'Dubai' },
     { value: 'Abu Dhabi', label: 'Abu Dhabi' },
   ]
-  function postProcessor() {
-    console.log("Posting ProcessorData");
-    axios.post('http://localhost:8888/processors', {
-      processor_type: type ? type.value : "",
-      receipt_from: from ? from.value : "",
-      description: description,
-      serial_number: serial, receipt_date: receipt
-    })
-      .then(function (response) {
-        const { data } = response;
-        console.log(data);
-        if (data.isValid === false) {
-          setErrors(data.errors);
-          return;
-        }
-        if (data.success === true) navigate('/processors');
-        return;
+
+  async function postProcessor() {
+    try {
+      const response = await axios.post("http://localhost:8888/processors", {
+        processor_type: type ? type.value : "",
+        receipt_from: from ? from.value : "",
+        description: description,
+        serial_number: serial, receipt_date: receipt
       })
-      .catch(function (error) {
-        console.log(error);
-      });
+      const { data } = response;
+      if (data.isValid === false) setErrors(data.errors);
+      else {
+        await processors.push(data.processor);
+        setProcessors(processors);
+        navigate("/processors");
+      }
+    }
+    catch (err) { console.log(err) }
   }
 
   async function checkAuth() {
@@ -226,9 +224,25 @@ function Dashboard() {
     } catch (error) { console.log(error) }
   }
 
+  async function getProcessors() {
+    try {
+      if (processors === null) {
+        const response = await axios.get("http://localhost:8888/processors");
+        const { data } = response;
+        if (data.processors) setProcessors(data.processors.map(processor => ({ ...processor, selected: false })));
+        else alert("Couldn't fetch the processors from the database");
+      }
+    } catch (error) { console.log(error) }
+  }
+
   useEffect(() => {
     checkAuth();
   }, [])
+  useEffect(() => {
+    getProcessors();
+  }, [])
+
+
 
   return (
     <Container>
@@ -243,7 +257,7 @@ function Dashboard() {
               <MySelect
                 defaultValue={type}
                 onChange={setType}
-                options={processors}
+                options={processorOptions}
                 styles={selectStyles}
               />
               {errors.processor_type && <Error>{errors.processor_type}</Error>}

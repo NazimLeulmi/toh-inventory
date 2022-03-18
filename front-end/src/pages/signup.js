@@ -27,6 +27,7 @@ function SignUp() {
   const [passwordc, setPasswordc] = React.useState('');
   const [errors, setErrors] = React.useState({});
   const navigate = useNavigate();
+
   async function postUserData() {
     console.log("Posting User Data");
     try {
@@ -40,6 +41,18 @@ function SignUp() {
 
     } catch (error) { console.log(error) }
   }
+  async function checkAuth() {
+    try {
+      const response = await axios.get("http://localhost:8888/check-auth");
+      const { data } = response;
+      if (data.success === true) navigate("/dashboard");
+      else navigate("/");
+    } catch (error) { console.log(error) }
+  }
+
+  React.useEffect(() => {
+    checkAuth();
+  }, [])
   return (
     <>
       <Introduction>

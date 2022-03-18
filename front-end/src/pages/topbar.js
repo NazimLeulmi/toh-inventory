@@ -44,6 +44,7 @@ const UserName = styled.p`
 `;
 
 
+
 function Bar() {
     return (
         <TopBar>
