@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useLocation, useNavigate, } from 'react-router-dom'
+import { Link, useLocation, useNavigate, } from 'react-router-dom'
 import SideNav from "./sidenav";
 import Bar from './topbar';
 import jsPDF from 'jspdf';
@@ -88,7 +88,8 @@ const PrintBtn = styled.div`
     margin-left:16px;
 
 `;
-const DeliverBtn = styled.div`
+const DeliverBtn = styled(Link)`
+  text-decoration: none;
     height:50px;
     border-radius: 5px;
     display: flex;
@@ -99,18 +100,19 @@ const DeliverBtn = styled.div`
     cursor: pointer;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     margin-left:auto;
-    span {
-      font-size: 28px;
+    label {
+      font-size: 16px;
       background-color: #0079f6;
       color:white;
-      padding:5px;
+      padding:10px;
       width:30px;
       height:30px;
       margin-left:15px;
-      display:flex;
-      align-items:center;
-      justify-content: center;
       border-radius: 5px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 `;
 const PrintText = styled.p`
@@ -179,6 +181,16 @@ function Processors() {
     getProcessors();
   }, [])
 
+  React.useEffect(async () => {
+    const newProcessors = await processors.map(element => {
+      if (element.selected === true) {
+        element.selected = false;
+      }
+      return element;
+    })
+    setProcessors(newProcessors);
+  }, [])
+
   return (
     <Container>
       <SideNav location={location.pathname} />
@@ -186,9 +198,13 @@ function Processors() {
         <Bar />
         <Header>
           <TableTitle>Processors Table</TableTitle>
-          <DeliverBtn onClick={() => handlePrint()}>
+          <DeliverBtn to="/delivery"
+            state={{
+              processors: processors &&
+                processors.filter(processor => processor.selected === true)
+            }}>
             <PrintText>DELIVER</PrintText>
-            <span>{counter}</span>
+            <label>{counter}</label>
           </DeliverBtn>
           <PrintBtn onClick={() => handlePrint()}>
             <PrintText>PRINT TABLE</PrintText>
@@ -200,8 +216,8 @@ function Processors() {
               <Data>TYPE</Data>
               <Data>SERIAL_NUMBER</Data>
               <Data>DESCRIPTION</Data>
-              <Data>RECEIPT_FROM</Data>
-              <Data>RECEIPT_DATE</Data>
+              <Data>RECEIVED_FROM</Data>
+              <Data>RECEIVED_DATE</Data>
               <Data>DELIVERED</Data>
             </TableRow>
           </TableHead>
@@ -213,9 +229,9 @@ function Processors() {
                 <Data>{processor.processor_type}</Data>
                 <Data>{processor.serial_number}</Data>
                 <Data>{processor.description}</Data>
-                <Data>{processor.receipt_from}</Data>
-                <Data>{processor.receipt_date}</Data>
-                <Data>{processor.delivery.delivered ? "TRUE" : "FALSE"}</Data>
+                <Data>{processor.received_from}</Data>
+                <Data>{processor.received_date}</Data>
+                <Data>{processor.delivery.delivered ? "YES" : "NO"}</Data>
               </TableRow>
             ))}
           </tbody>

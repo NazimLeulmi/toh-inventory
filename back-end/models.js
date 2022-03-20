@@ -12,8 +12,8 @@ const processorSchema = new Schema({
     processor_type: { type: String, required: true },
     description: { type: String, required: false },
     serial_number: { type: Number, required: true, unique: true },
-    receipt_from: { type: String, required: true },
-    receipt_date: { type: String, required: true },
+    received_from: { type: String, required: true },
+    received_date: { type: String, required: true },
     delivery: {
         delivered: { type: Boolean, default: false },
         delivered_to: { type: String, default: null },

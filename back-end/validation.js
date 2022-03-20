@@ -59,9 +59,9 @@ function validateSignUp(data) {
 }
 function validateProcessor(data) {
     console.log(data);
-    const { processor_type, receipt_from, receipt_date, description, serial_number } = data;
+    const { processor_type, received_from, receipt_date, description, serial_number } = data;
     const errors = {
-        processor_type: "", receipt_from: "", receipt_date: "",
+        processor_type: "", received_from: "", received_date: "",
         description: "", serial_number: ""
     };
     // Processor type validation
@@ -69,16 +69,16 @@ function validateProcessor(data) {
         errors.processor_type = "The processor type is required";
     }
     // Receipt location validation
-    if (receipt_from === "" || receipt_from === null || receipt_from === undefined) {
-        errors.receipt_from = "The receipt location is required";
+    if (received_from === "" || received_from === null || received_from === undefined) {
+        errors.received_from = "The receipt location is required";
     }
     // Receipt date validation
-    if (receipt_date === "" || receipt_date === null || receipt_date === undefined) {
-        errors.receipt_date = "The receipt date is required";
+    if (received_date === "" || received_date === null || received_date === undefined) {
+        errors.received_date = "The receipt date is required";
     }
     else if (/^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/
-        .test(receipt_date) === false) {
-        errors.receipt_date = "Date format has to be DD/MM/YYYY";
+        .test(received_date) === false) {
+        errors.received_date = "Date format has to be DD/MM/YYYY";
     }
     // Description validation
     if (description === "" || description === null || description === undefined) {
@@ -89,12 +89,12 @@ function validateProcessor(data) {
         errors.serial_number = "The serial number is required";
     }
     else if (!validator.isNumeric(serial_number)) {
-        errors.receipt_from = "The serial number must contain only numbers";
+        errors.received_from = "The serial number must contain only numbers";
     }
 
 
     console.log("Processor form validation");
-    const errorsString = errors.receipt_from + errors.receipt_date + errors.description +
+    const errorsString = errors.received_from + errors.received_date + errors.description +
         errors.serial_number + errors.processor_type;
     return { isValid: errorsString === "" ? true : false, errors }
 }

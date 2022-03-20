@@ -55,11 +55,12 @@ app.post("/signin", async (req, res) => {
 app.post("/signup", async (req, res) => {
   const { isValid, errors } = validation.validateSignUp(req.body);
   if (!isValid) return res.json({ isValid, errors });
-  const hash = await bcrypt.hash(req.body.password, 12);
+  const { first_name, last_name, email, password } = req.body;
+  const hash = await bcrypt.hash(password, 12);
   const userModel = new models.UserModel({
-    first_name: req.body.first_name,
-    last_name: req.body.last_name,
-    email: req.body.email,
+    first_name: first_name,
+    last_name: last_name,
+    email: email,
     password: hash,
   })
   const userEntry = await userModel.save().catch(err => console.log(err));
@@ -95,16 +96,22 @@ app.post("/signout", async (req, res) => {
 
 app.post("/processors", async (req, res) => {
   const { isValid, errors } = validation.validateProcessor(req.body);
+  const {
+    processor_type, description, received_from,
+    received_date, serial_number } = req.body;
   if (!isValid) return res.json({ isValid, errors });
-  const processor = await models.ProcessorModel.findOne({ serial_number: req.body.serial_number })
+  const processor = await models.ProcessorModel.findOne({ serial_number: serial_number })
     .catch(error => console.log(err));
-  if (processor) return res.json({ isValid: false, errors: { serial_number: "Duplicate serial number" } })
+  if (processor) return res.json({
+    isValid: false,
+    errors: { serial_number: "Duplicate serial number" }
+  })
   const processorModel = new models.ProcessorModel({
-    processor_type: req.body.processor_type,
-    description: req.body.description,
-    receipt_from: req.body.receipt_from,
-    receipt_date: req.body.receipt_date,
-    serial_number: req.body.serial_number,
+    processor_type: processor_type,
+    description: description,
+    received_from: received_from,
+    received_date: received_date,
+    serial_number: serial_number,
   })
   const processorEntry = await processorModel.save();
   return res.json({ success: true, processor: processorEntry })

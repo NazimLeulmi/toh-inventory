@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Label, Input, InputContainer, MySelect, } from './dashboard';
 import LogoSvg from '../assets/logo.svg';
 import Select from 'react-select';
+import { useLocation } from 'react-router-dom';
 
 
 const TopBar = styled.div`
@@ -44,9 +45,10 @@ const insuranceTypes = [
   { value: 'C1/C2', label: 'C1/C2' },
   { value: 'C3/C4', label: 'C3/C4' },
 ]
-
-
-
+const audiologists = [
+  { value: 'ANAS SULTAN OBEIDAT', label: 'ANAS SULTAN OBEIDAT' },
+  { value: 'ABDULLAH MOHAMMED HAYAJNEH', label: 'ABDULLAH MOHAMMED HAYAJNEH' },
+]
 
 
 export const selectStyles = {
@@ -58,15 +60,52 @@ export const selectStyles = {
   })
 }
 
+const Processor = styled.div`
+  width:400px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  background-color: white;
+  border:1px solid rgba(0,0,0,.1);
+  border-radius: 5px;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  padding:20px;
+  text-align: center;
+`;
+
+const ProcessorName = styled.h2`
+  font-size:20px;
+  margin-bottom:14px;
+`;
+const ProcessorSerial = styled.h3`
+  font-size:20px;
+  font-weight: bold;
+  margin-bottom:14px;
+`;
+const Description = styled.p`
+  font-size:18px;
+  margin-bottom:14px;
+`;
+
+const Blank = styled.div`
+  width:400px;
+`;
+
 
 function DeliveryForm() {
-  const [insurance, setInsurance] = React.useState(null);
+  const [insurance, setInsurance] = React.useState("");
   const [dnumber, setDnumber] = React.useState("");
-  const [fileNumber, setFileNumber] = React.useState(null);
+  const [fileNumber, setFileNumber] = React.useState("")
   const [mrn, setMrn] = React.useState("");
   const [received, setReceived] = React.useState("");
   const [receivedDate, setReceivedDate] = React.useState("");
   const [institution, setInstitution] = React.useState("");
+  const [lpo, setLpo] = React.useState("");
+  const [lpoDate, setLpoDate] = React.useState("");
+  const [audiologist, setAudiologist] = React.useState("");
+  const location = useLocation();
+  const { processors } = location.state;
+
 
 
   return (
@@ -85,33 +124,57 @@ function DeliveryForm() {
             styles={selectStyles}
           />
         </InputContainer>
-        <InputContainer>
-          <Label>D-NUMBER</Label>
-          <Input type="text"
-            name="dnumber"
-            value={dnumber}
-            onChange={e => setDnumber(e.target.value)}
-            placeholder="D-YYYY-NNNN"
-          />
-        </InputContainer>
-        <InputContainer>
-          <Label>FILE NUMBER</Label>
-          <Input type="number"
-            name="file-number"
-            value={fileNumber}
-            onChange={e => setFileNumber(e.target.value)}
-            placeholder="0NNNN"
-          />
-        </InputContainer>
-        <InputContainer>
-          <Label>MEDICAL RECORD NUMBER</Label>
-          <Input type="text"
-            name="mrn"
-            value={mrn}
-            onChange={e => setMrn(e.target.value)}
-            placeholder="NNNNNNNNNNNN"
-          />
-        </InputContainer>
+        {insurance.value == "C1/C2" ?
+          <InputContainer>
+            <Label>D-NUMBER</Label>
+            <Input type="text"
+              name="dnumber"
+              value={dnumber}
+              onChange={e => setDnumber(e.target.value)}
+              placeholder="D-YYYY-NNNN"
+            />
+          </InputContainer> :
+          <InputContainer>
+            <Label>LPO NUMBER</Label>
+            <Input type="text"
+              name="lpo"
+              value={lpo}
+              onChange={e => setLpo(e.target.value)}
+              placeholder="ENTER THE LPO NUMBER"
+            />
+          </InputContainer>
+        }
+        {insurance.value === "C1/C2" ?
+          <InputContainer>
+            <Label>FILE NUMBER</Label>
+            <Input type="number"
+              name="file-number"
+              value={fileNumber}
+              onChange={e => setFileNumber(e.target.value)}
+              placeholder="0NNNN"
+            />
+          </InputContainer> :
+          <InputContainer>
+            <Label>LPO DATE</Label>
+            <Input type="text"
+              name="lpo-date"
+              value={lpoDate}
+              onChange={e => setLpoDate(e.target.value)}
+              placeholder="DD/MM/YYYY"
+            />
+          </InputContainer>
+        }
+        {insurance.value === "C3/C4" ?
+          <InputContainer>
+            <Label>MEDICAL RECORD NUMBER</Label>
+            <Input type="text"
+              name="mrn"
+              value={mrn}
+              onChange={e => setMrn(e.target.value)}
+              placeholder="NNNNNNNNNNNN"
+            />
+          </InputContainer> : null
+        }
         <InputContainer>
           <Label>RECEIVED BY</Label>
           <Input type="text"
@@ -140,11 +203,28 @@ function DeliveryForm() {
           />
         </InputContainer>
         <InputContainer>
+          <Label>AUDIOLOGIST</Label>
+          <Select
+            defaultValue={audiologist}
+            onChange={setAudiologist}
+            options={audiologists}
+            styles={selectStyles}
+          />
+        </InputContainer>
+        <InputContainer>
           <Label>SIGNATURE</Label>
           <Input type="text"
             name="signature"
           />
         </InputContainer>
+        {insurance.value === "C3/C4" ? <Blank /> : null}
+        {processors && processors.map(processor => (
+          <Processor key={processor._id}>
+            <ProcessorSerial>SN:{processor.serial_number}</ProcessorSerial>
+            <ProcessorName>{processor.processor_type}</ProcessorName>
+            <Description>{processor.description}</Description>
+          </Processor>
+        ))}
       </GridContainer>
 
     </Container>

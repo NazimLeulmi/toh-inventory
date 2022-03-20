@@ -176,7 +176,7 @@ function Dashboard() {
   const [type, setType] = React.useState(null);
   const [from, setFrom] = React.useState(null);
   const [serial, setSerial] = React.useState('');
-  const [receipt, setReceipt] = React.useState('');
+  const [received, setReceived] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [errors, setErrors] = React.useState({});
   const navigate = useNavigate();
@@ -186,7 +186,7 @@ function Dashboard() {
   const processorOptions = [
     { value: 'Cocklear N7', label: 'Cocklear N7' },
     { value: 'Cocklear Kanso-2', label: 'Cocklear Kanso-2' },
-    { value: 'Baha-6 Max', label: 'Baha-6 Max' },
+    { value: 'Baha-6 Max Sound', label: 'Baha-6 Max Sound' },
     { value: 'Osia Implant', label: 'Osia Implant' },
     { value: 'AB Naida C1 Q90', label: 'AB Naida C1 Q90' },
   ];
@@ -200,9 +200,9 @@ function Dashboard() {
     try {
       const response = await axios.post("http://localhost:8888/processors", {
         processor_type: type ? type.value : "",
-        receipt_from: from ? from.value : "",
+        received_from: from ? from.value : "",
         description: description,
-        serial_number: serial, receipt_date: receipt
+        serial_number: serial, received_date: received
       })
       const { data } = response;
       if (data.isValid === false) setErrors(data.errors);
@@ -283,24 +283,24 @@ function Dashboard() {
               {errors.serial_number && <Error>{errors.serial_number}</Error>}
             </InputContainer>
             <InputContainer>
-              <Label>Receipt From</Label>
+              <Label>Received From</Label>
               <MySelect
                 defaultValue={from}
                 onChange={setFrom}
                 options={delivery}
                 styles={selectStyles}
               />
-              {errors.receipt_from && <Error>{errors.receipt_from}</Error>}
+              {errors.received_from && <Error>{errors.received_from}</Error>}
             </InputContainer>
             <InputContainer>
-              <Label>Receipt Date</Label>
+              <Label>Received Date</Label>
               <Input type="text"
                 name="recieptDate"
-                value={receipt}
-                onChange={e => setReceipt(e.target.value)}
+                value={received}
+                onChange={e => setReceived(e.target.value)}
                 placeholder="DD/MM/YYYY"
               />
-              {errors.receipt_date && <Error>{errors.receipt_date}</Error>}
+              {errors.received_date && <Error>{errors.received_date}</Error>}
             </InputContainer>
             <Btn onClick={() => postProcessor()}>
               <FormBtnText>SAVE PROCESSOR</FormBtnText>
