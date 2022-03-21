@@ -124,5 +124,15 @@ app.get("/processors", async (req, res) => {
   } catch (err) { console.log(err) }
 })
 
+app.post("/deliver", async (req, res) => {
+  const { ids } = req.body;
+  // const firstProcessor = await models.ProcessorModel.findByIdAndUpdate(ids[0],{
+  //   delivery:{
+  //     delivered:true,de
+  //   }
+  // })
+
+})
+
 
 app.listen(8888, () => console.log("Node.js server running on port 8888"));

@@ -4,7 +4,6 @@ import LogoSvg from '../assets/logo.svg';
 
 
 
-
 const TopBar = styled.div`
     width:100%;
     height:100px;

@@ -202,7 +202,8 @@ function Dashboard() {
         processor_type: type ? type.value : "",
         received_from: from ? from.value : "",
         description: description,
-        serial_number: serial, received_date: received
+        serial_number: serial,
+        received_date: received
       })
       const { data } = response;
       if (data.isValid === false) setErrors(data.errors);

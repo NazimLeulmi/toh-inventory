@@ -45,8 +45,8 @@ function SignUp() {
     try {
       const response = await axios.get("http://localhost:8888/check-auth");
       const { data } = response;
+      console.log(data)
       if (data.success === true) navigate("/dashboard");
-      else navigate("/");
     } catch (error) { console.log(error) }
   }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link, useLocation, useNavigate, } from 'react-router-dom'
+import { useLocation, useNavigate, } from 'react-router-dom'
 import SideNav from "./sidenav";
 import Bar from './topbar';
 import jsPDF from 'jspdf';
@@ -88,8 +88,7 @@ const PrintBtn = styled.div`
     margin-left:16px;
 
 `;
-const DeliverBtn = styled(Link)`
-  text-decoration: none;
+const DeliverBtn = styled.div`
     height:50px;
     border-radius: 5px;
     display: flex;
@@ -150,8 +149,8 @@ function Processors() {
     try {
       const response = await axios.get("http://localhost:8888/check-auth");
       const { data } = response;
-      if (data.success === true) {
-        // setAuth(data.user); navigate("/dashboard"); return;
+      if (data.success === false) {
+        setAuth(false); navigate("/");
       }
     } catch (error) { console.log(error) }
   }
@@ -173,6 +172,15 @@ function Processors() {
     setProcessors(newProcessors);
   }
 
+  async function deliver() {
+    const selected = await processors.filter(processor => processor.selected === true);
+    const ids = await selected.map(s => s._id);
+    const response = await axios.post("http://localhost:8888/deliver", { ids });
+    const { data } = response;
+    if (data.success) navigate("/delivery", { state: { processors: selected } })
+    else alert("Failed to deliver the sound processors");
+  }
+
   React.useEffect(() => {
     checkAuth();
   }, [])
@@ -182,13 +190,15 @@ function Processors() {
   }, [])
 
   React.useEffect(async () => {
-    const newProcessors = await processors.map(element => {
-      if (element.selected === true) {
-        element.selected = false;
-      }
-      return element;
-    })
-    setProcessors(newProcessors);
+    if (processors) {
+      const newProcessors = await processors.map(element => {
+        if (element.selected === true) {
+          element.selected = false;
+        }
+        return element;
+      })
+      setProcessors(newProcessors);
+    }
   }, [])
 
   return (
@@ -198,11 +208,7 @@ function Processors() {
         <Bar />
         <Header>
           <TableTitle>Processors Table</TableTitle>
-          <DeliverBtn to="/delivery"
-            state={{
-              processors: processors &&
-                processors.filter(processor => processor.selected === true)
-            }}>
+          <DeliverBtn onClick={() => deliver()}>
             <PrintText>DELIVER</PrintText>
             <label>{counter}</label>
           </DeliverBtn>

@@ -59,7 +59,7 @@ function validateSignUp(data) {
 }
 function validateProcessor(data) {
     console.log(data);
-    const { processor_type, received_from, receipt_date, description, serial_number } = data;
+    const { processor_type, received_from, received_date, description, serial_number } = data;
     const errors = {
         processor_type: "", received_from: "", received_date: "",
         description: "", serial_number: ""
