@@ -125,14 +125,26 @@ app.get("/processors", async (req, res) => {
 })
 
 app.post("/deliver", async (req, res) => {
-  const { ids } = req.body;
-  // const firstProcessor = await models.ProcessorModel.findByIdAndUpdate(ids[0],{
-  //   delivery:{
-  //     delivered:true,de
-  //   }
-  // })
-
+  try {
+    const updated = await models.ProcessorModel.findByIdAndUpdate(req.body.id, {
+      delivery: {
+        delivered: true,
+        insurance: req.body.insurance.value,
+        patient: req.body.patient,
+        institution: req.body.institution,
+        delivery_date: req.body.delivery_date,
+        received_by: req.body.received_by,
+        audiologist: req.body.audiologist.value,
+        file_number: req.body.file_number,
+        d_number: req.body.d_number,
+        lpo: req.body.lpo,
+        lpo_date: req.body.lpo_date,
+        mrn: req.body.mrn,
+      }
+    })
+    console.log(updated);
+    // return res.json({ success: true, processor: updated });
+  } catch (err) { console.log(err) }
 })
-
 
 app.listen(8888, () => console.log("Node.js server running on port 8888"));

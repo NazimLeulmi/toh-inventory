@@ -230,7 +230,7 @@ function Dashboard() {
       if (processors === null) {
         const response = await axios.get("http://localhost:8888/processors");
         const { data } = response;
-        if (data.processors) setProcessors(data.processors.map(processor => ({ ...processor, selected: false })));
+        if (data.processors) setProcessors(data.processors);
         else alert("Couldn't fetch the processors from the database");
       }
     } catch (error) { console.log(error) }

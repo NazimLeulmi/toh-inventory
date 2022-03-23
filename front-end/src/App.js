@@ -9,6 +9,7 @@ import Processors from "./pages/processors";
 import HearingAids from "./pages/hearing";
 import DeliveryForm from "./pages/delivery";
 import axios from "axios";
+import Delivered from "./pages/delivered";
 
 // Send cookies with http requests
 axios.defaults.withCredentials = true
@@ -35,6 +36,7 @@ function App() {
             <Route exact path="/processors" element={<Processors />} />
             <Route exact path="/hearing_aids" element={<HearingAids />} />
             <Route exact path="/delivery" element={<DeliveryForm />} />
+            <Route exact path="/delivered" element={<Delivered />} />
           </Routes>
         </ProcessorsContext.Provider>
       </AuthContext.Provider>

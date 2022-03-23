@@ -47,11 +47,6 @@ const TableHead = styled.thead`
 `;
 
 const TableRow = styled.tr`
-  background-color: ${props => props.selected === props._id ? "rgba(0,0,0,.1)" : null};
-  font-weight: ${props => props.selected === props._id ? "bold" : 400};
-  :hover {
-    background:${props => props.name === "data" ? "rgba(0,0,0,.1)" : null};
-  }
 `;
 
 
@@ -86,19 +81,6 @@ const PrintBtn = styled.div`
     cursor: pointer;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     margin-left:16px;
-
-`;
-const DeliverBtn = styled.div`
-    height:50px;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #0079f6;
-    color:white;
-    padding:15px;
-    cursor: pointer;
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     margin-left:auto;
 `;
 const PrintText = styled.p`
@@ -108,8 +90,9 @@ const PrintText = styled.p`
 `;
 
 
-function Processors() {
+function Delivered() {
   const { processors, setProcessors } = React.useContext(ProcessorsContext);
+  const [delivered, setDelivered] = React.useState(null);
   const [selected, setSelected] = React.useState(null);
   const { auth, setAuth } = React.useContext(AuthContext);
   const navigate = useNavigate();
@@ -120,8 +103,15 @@ function Processors() {
       if (processors === null) {
         const response = await axios.get("http://localhost:8888/processors");
         const { data } = response;
-        if (data.processors) setProcessors(data.processors);
+        if (data.processors) {
+          setProcessors(data.processors);
+          const filtered = await data.processors.filter(e => e.delivery.delivered === true);
+          setDelivered(filtered);
+        }
         else alert("Couldn't fetch the processors from the database");
+      } else {
+        const filtered = await processors.filter(e => e.delivery.delivered === true);
+        setDelivered(filtered);
       }
     } catch (error) { console.log(error) }
   }
@@ -129,7 +119,7 @@ function Processors() {
   function handlePrint() {
     const doc = new jsPDF();
     doc.autoTable({ html: '#processors-table', theme: "grid" })
-    doc.save('table.pdf');
+    doc.save('delivered.pdf');
   }
 
   async function checkAuth() {
@@ -142,14 +132,7 @@ function Processors() {
     } catch (error) { console.log(error) }
   }
 
-  async function selectRow(processor) {
-    if (selected && processor._id === selected._id) setSelected(null);
-    else setSelected(processor);
-  }
 
-  async function deliver() {
-    navigate("/delivery", { state: { processor: selected } })
-  }
 
   React.useEffect(() => {
     checkAuth();
@@ -159,17 +142,13 @@ function Processors() {
     getProcessors();
   }, [])
 
-
   return (
     <Container>
       <SideNav location={location.pathname} />
       <Content>
         <Bar />
         <Header>
-          <TableTitle>Processors Table</TableTitle>
-          <DeliverBtn onClick={() => deliver()}>
-            <PrintText>DELIVER</PrintText>
-          </DeliverBtn>
+          <TableTitle>Delivered Sound Processors</TableTitle>
           <PrintBtn onClick={() => handlePrint()}>
             <PrintText>PRINT TABLE</PrintText>
           </PrintBtn>
@@ -181,23 +160,19 @@ function Processors() {
               <Data>SERIAL_NUMBER</Data>
               <Data>DESCRIPTION</Data>
               <Data>RECEIVED_FROM</Data>
-              <Data>RECEIVED_DATE</Data>
-              <Data>DELIVERED</Data>
+              <Data>DELIVERY_DATE</Data>
+              <Data>RECEIVED_BY</Data>
             </TableRow>
           </TableHead>
           <tbody>
-            {processors && processors.map(processor => (
-              <TableRow key={processor._id} name="data"
-                onClick={() => selectRow(processor)}
-                selected={selected ? selected._id : null}
-                _id={processor._id}
-              >
+            {delivered && delivered.map(processor => (
+              <TableRow key={processor._id} name="data">
                 <Data>{processor.processor_type}</Data>
                 <Data>{processor.serial_number}</Data>
                 <Data>{processor.description}</Data>
                 <Data>{processor.received_from}</Data>
-                <Data>{processor.received_date}</Data>
-                <Data>{processor.delivery.delivered ? "YES" : "NO"}</Data>
+                <Data>{processor.delivery.delivery_date}</Data>
+                <Data>{processor.delivery.received_by}</Data>
               </TableRow>
             ))}
           </tbody>
@@ -208,4 +183,4 @@ function Processors() {
 }
 
 
-export default Processors;
+export default Delivered;

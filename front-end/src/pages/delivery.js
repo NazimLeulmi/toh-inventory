@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { Label, Input, InputContainer, MySelect, } from './dashboard';
+import { Label, Input, InputContainer } from './dashboard';
 import LogoSvg from '../assets/logo.svg';
 import Select from 'react-select';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { ProcessorsContext } from '../App';
 
 
 const TopBar = styled.div`
@@ -32,13 +34,48 @@ const HeaderText = styled.h1`
   border:1px solid black;
   padding:10px;
   border-radius: 5px;
+  cursor: pointer;
 `;
 
 const GridContainer = styled.div`
-  width:50%;
+  width:815px;
   display:grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 15px;
+`;
+
+const Processor = styled.div`
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  background-color: white;
+  border:1px solid rgba(0,0,0,.1);
+  border-radius: 5px;
+  display:flex;
+  flex-direction: column;
+  padding:20px 40px;
+  grid-column: 1/-1;
+  border-left: 3px solid #0079f6;
+`;
+
+
+const Field = styled.div`
+  display:flex;
+  align-items: center;
+`;
+
+const FieldHeader = styled.h2`
+  font-size:18px;
+  padding:10px;
+  width:200px;
+  margin-bottom:10px;
+  text-transform: uppercase;
+  font-weight: bold;
+`;
+const FieldText = styled.p`
+  font-size:18px;
+  padding:10px;
+  margin-bottom:10px;
+  margin-left:5px;
+  font-weight: 400;
 `;
 
 const insuranceTypes = [
@@ -60,58 +97,60 @@ export const selectStyles = {
   })
 }
 
-const Processor = styled.div`
-  width:400px;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-  background-color: white;
-  border:1px solid rgba(0,0,0,.1);
-  border-radius: 5px;
-  display:flex;
-  flex-direction: column;
-  align-items: center;
-  padding:20px;
-  text-align: center;
-`;
 
-const ProcessorName = styled.h2`
-  font-size:20px;
-  margin-bottom:14px;
-`;
-const ProcessorSerial = styled.h3`
-  font-size:20px;
-  font-weight: bold;
-  margin-bottom:14px;
-`;
-const Description = styled.p`
-  font-size:18px;
-  margin-bottom:14px;
-`;
 
-const Blank = styled.div`
-  width:400px;
-`;
 
 
 function DeliveryForm() {
+  const { processors, setProcessors } = React.useContext(ProcessorsContext);
   const [insurance, setInsurance] = React.useState("");
+  const [patient, setPatient] = React.useState("");
   const [dnumber, setDnumber] = React.useState("");
   const [fileNumber, setFileNumber] = React.useState("")
   const [mrn, setMrn] = React.useState("");
   const [received, setReceived] = React.useState("");
-  const [receivedDate, setReceivedDate] = React.useState("");
   const [institution, setInstitution] = React.useState("");
   const [lpo, setLpo] = React.useState("");
   const [lpoDate, setLpoDate] = React.useState("");
   const [audiologist, setAudiologist] = React.useState("");
+  const [date, setDate] = React.useState(getDate());
   const location = useLocation();
-  const { processors } = location.state;
+  const { processor } = location.state;
+  const navigate = useNavigate();
 
+  function getDate() {
+    let today = new Date();
+    const yyyy = today.getFullYear();
+    let mm = today.getMonth() + 1; // Months start at 0!
+    let dd = today.getDate();
+
+    if (dd < 10) dd = '0' + dd;
+    if (mm < 10) mm = '0' + mm;
+    today = dd + '/' + mm + '/' + yyyy;
+    return today;
+  }
+
+  async function deliver() {
+    const response = await axios.post("http://localhost:8888/deliver", {
+      delivered: true, insurance: insurance, patient: patient, delivery_date: date,
+      received_by: received, lpo: lpo, lpo_date: lpoDate, mrn: mrn, id: processor._id,
+      audiologist: audiologist, file_number: fileNumber, d_number: dnumber, institution: institution
+    })
+    const { data } = response;
+    if (data.success === true && data.processor) {
+      const index = processors.findIndex(x => x._id === data.processor._id);
+      const updatedProcessors = [...processors];
+      updatedProcessors[index] = data.processor;
+      setProcessors(updatedProcessors);
+      navigate("/processors");
+    } else alert("Failed to deliver the processor , please try again");
+  }
 
 
   return (
     <Container>
       <TopBar>
-        <HeaderText>Delivery Form</HeaderText>
+        <HeaderText onClick={() => deliver()}>Delivery Form</HeaderText>
         <Logo src={LogoSvg} />
       </TopBar>
       <GridContainer>
@@ -122,6 +161,15 @@ function DeliveryForm() {
             onChange={setInsurance}
             options={insuranceTypes}
             styles={selectStyles}
+          />
+        </InputContainer>
+        <InputContainer>
+          <Label>PATIENT NAME</Label>
+          <Input type="text"
+            name="patient-name"
+            value={patient}
+            onChange={e => setPatient(e.target.value)}
+            placeholder="ENTER THE PATIENT'S NAME"
           />
         </InputContainer>
         {insurance.value == "C1/C2" ?
@@ -185,15 +233,6 @@ function DeliveryForm() {
           />
         </InputContainer>
         <InputContainer>
-          <Label>RECEIVED DATE</Label>
-          <Input type="text"
-            name="received-date"
-            value={receivedDate}
-            onChange={e => setReceivedDate(e.target.value)}
-            placeholder="DD/MM/YYYY"
-          />
-        </InputContainer>
-        <InputContainer>
           <Label>INSTITUTION</Label>
           <Input type="text"
             name="institution"
@@ -217,15 +256,31 @@ function DeliveryForm() {
             name="signature"
           />
         </InputContainer>
-        {insurance.value === "C3/C4" ? <Blank /> : null}
-        {processors && processors.map(processor => (
-          <Processor key={processor._id}>
-            <ProcessorSerial>SN:{processor.serial_number}</ProcessorSerial>
-            <ProcessorName>{processor.processor_type}</ProcessorName>
-            <Description>{processor.description}</Description>
-          </Processor>
-        ))}
+        <Processor key={processor._id}>
+          <Field>
+            <FieldHeader>Serial Number</FieldHeader>
+            <FieldText>{processor.serial_number}</FieldText>
+          </Field>
+          <Field>
+            <FieldHeader>Processor Type</FieldHeader>
+            <FieldText>{processor.processor_type}</FieldText>
+          </Field>
+          <Field>
+            <FieldHeader>Description</FieldHeader>
+            <FieldText>{processor.description}</FieldText>
+          </Field>
+          <Field>
+            <FieldHeader>Received Date</FieldHeader>
+            <FieldText>{processor.received_date}</FieldText>
+          </Field>
+          <Field>
+            <FieldHeader>Delivery Date</FieldHeader>
+            <FieldText>{date}</FieldText>
+          </Field>
+        </Processor>
       </GridContainer>
+      {/* Processor */}
+
 
     </Container>
   )

@@ -88,7 +88,11 @@ function SideNav({ location }) {
                 <LinkIcon className="material-icons">&#xe322;</LinkIcon>
                 PROCESSORS
             </BarLink>
-            <BarLink to="/delivered" location={location} link="/hearing">
+            <BarLink to="/delivered" location={location} link="/delivered">
+                <LinkIcon className="material-icons">&#xe558;</LinkIcon>
+                DELIVERED
+            </BarLink>
+            <BarLink to="/hearing" location={location} link="/hearing">
                 <LinkIcon className="material-icons">&#xe023;</LinkIcon>
                 HEARING AIDS
             </BarLink>
