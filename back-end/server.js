@@ -143,7 +143,7 @@ app.post("/deliver", async (req, res) => {
       }
     })
     console.log(updated);
-    // return res.json({ success: true, processor: updated });
+    return res.json({ success: true, processor: updated });
   } catch (err) { console.log(err) }
 })
 

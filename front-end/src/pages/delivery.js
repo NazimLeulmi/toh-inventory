@@ -138,11 +138,13 @@ function DeliveryForm() {
     })
     const { data } = response;
     if (data.success === true && data.processor) {
-      const index = processors.findIndex(x => x._id === data.processor._id);
-      const updatedProcessors = [...processors];
+      const index = await processors.findIndex(x => x._id === data.processor._id);
+      console.log(index, "Index");
+      const updatedProcessors = await [...processors];
       updatedProcessors[index] = data.processor;
+      console.log(updatedProcessors);
       setProcessors(updatedProcessors);
-      navigate("/processors");
+      // navigate("/processors");
     } else alert("Failed to deliver the processor , please try again");
   }
 

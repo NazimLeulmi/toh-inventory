@@ -93,10 +93,10 @@ const PrintText = styled.p`
 function Delivered() {
   const { processors, setProcessors } = React.useContext(ProcessorsContext);
   const [delivered, setDelivered] = React.useState(null);
-  const [selected, setSelected] = React.useState(null);
   const { auth, setAuth } = React.useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
+
 
   async function getProcessors() {
     try {
