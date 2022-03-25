@@ -131,20 +131,21 @@ function DeliveryForm() {
   }
 
   async function deliver() {
-    const response = await axios.post("http://localhost:8888/deliver", {
+    const delivery = {
       delivered: true, insurance: insurance, patient: patient, delivery_date: date,
       received_by: received, lpo: lpo, lpo_date: lpoDate, mrn: mrn, id: processor._id,
       audiologist: audiologist, file_number: fileNumber, d_number: dnumber, institution: institution
-    })
+    }
+    const response = await axios.post("http://localhost:8888/deliver", delivery)
     const { data } = response;
     if (data.success === true && data.processor) {
-      const index = await processors.findIndex(x => x._id === data.processor._id);
-      console.log(index, "Index");
-      const updatedProcessors = await [...processors];
-      updatedProcessors[index] = data.processor;
-      console.log(updatedProcessors);
-      setProcessors(updatedProcessors);
-      // navigate("/processors");
+      const newArray = await processors.map(e => {
+        if (e._id === processor._id) e.delivery = delivery;
+        return e;
+      });
+      setProcessors(newArray);
+      window.print();
+      navigate("/processors");
     } else alert("Failed to deliver the processor , please try again");
   }
 
@@ -281,7 +282,6 @@ function DeliveryForm() {
           </Field>
         </Processor>
       </GridContainer>
-      {/* Processor */}
 
 
     </Container>
