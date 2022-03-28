@@ -147,4 +147,24 @@ app.post("/deliver", async (req, res) => {
   } catch (err) { console.log(err) }
 })
 
+app.post("/update", async (req, res) => {
+  try {
+    const {
+      processor_type, description, received_from,
+      received_date, serial_number, delivery } = req.body;
+    const { isValid, errors } = validation.validateProcessor(req.body);
+    if (!isValid) return res.json({ isValid, errors });
+    console.log(req.body);
+    const processor = await models.ProcessorModel.findById(req.body._id);
+    if (delivery === "NO") processor.delivery = { delivered: false };
+    processor.processor_type = processor_type;
+    processor.description = description;
+    processor.received_from = received_from;
+    processor.received_date = received_date;
+    processor.serial_number = serial_number;
+    const updated = await processor.save();
+    return res.json({ success: true, processor: updated });
+  } catch (err) { console.log(err) }
+})
+
 app.listen(8888, () => console.log("Node.js server running on port 8888"));

@@ -35,7 +35,7 @@ const Form = styled.div`
     align-items: center;
 `;
 
-const FormHeader = styled.h1`
+export const FormHeader = styled.h1`
     font-size:32px;
     margin-bottom:20px;
     text-align: center;
@@ -138,7 +138,7 @@ const FlexContainer = styled.div`
     flex:1;
 `;
 
-const TextArea = styled.textarea`
+export const TextArea = styled.textarea`
     padding:10px;
     width:400px;
     height:80px;
@@ -158,11 +158,11 @@ const TextArea = styled.textarea`
     }
 `;
 
-const Btn = styled(FormBtn)`
+export const Btn = styled(FormBtn)`
     width:400px;
     height:50px;
 `;
-const Error = styled.p`
+export const Error = styled.p`
     color:red;
     font-size: 16px;
     width:400px;

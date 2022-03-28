@@ -99,8 +99,15 @@ const DeliverBtn = styled.div`
     padding:15px;
     cursor: pointer;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-    margin-left:auto;
+    margin-left:16px;
 `;
+
+const UpdateBtn = styled(DeliverBtn)`
+  background-color: papayawhip;
+  color:black;
+  margin-left:auto;
+`;
+
 const PrintText = styled.p`
     font-size:20px;
     letter-spacing: 2px;
@@ -147,8 +154,13 @@ function Processors() {
     else setSelected(processor);
   }
 
-  async function deliver() {
+
+
+  function deliver() {
     navigate("/delivery", { state: { processor: selected } })
+  }
+  function edit() {
+    navigate("/update", { state: { processor: selected } })
   }
 
   React.useEffect(() => {
@@ -167,6 +179,9 @@ function Processors() {
         <Bar />
         <Header>
           <TableTitle>Processors Table</TableTitle>
+          <UpdateBtn onClick={() => edit()}>
+            <PrintText>EDIT</PrintText>
+          </UpdateBtn>
           <DeliverBtn onClick={() => deliver()}>
             <PrintText>DELIVER</PrintText>
           </DeliverBtn>

@@ -96,10 +96,6 @@ function SideNav({ location }) {
                 <LinkIcon className="material-icons">&#xe023;</LinkIcon>
                 HEARING AIDS
             </BarLink>
-            <BarLink to="/users" location={location} link="/users">
-                <LinkIcon className="material-icons">&#xe7ef;</LinkIcon>
-                USERS
-            </BarLink>
             <BarLink to="" style={{ marginTop: "auto", marginBottom: 24 }}
                 location={location} link="" onClick={() => signOut()}
             >

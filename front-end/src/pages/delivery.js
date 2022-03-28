@@ -132,9 +132,10 @@ function DeliveryForm() {
 
   async function deliver() {
     const delivery = {
-      delivered: true, insurance: insurance, patient: patient, delivery_date: date,
+      delivered: true, insurance: insurance ? insurance.value : "",
+      patient: patient, delivery_date: date, audiologist: audiologist.value,
       received_by: received, lpo: lpo, lpo_date: lpoDate, mrn: mrn, id: processor._id,
-      audiologist: audiologist, file_number: fileNumber, d_number: dnumber, institution: institution
+      file_number: fileNumber, d_number: dnumber, institution: institution
     }
     const response = await axios.post("http://localhost:8888/deliver", delivery)
     const { data } = response;
@@ -145,7 +146,7 @@ function DeliveryForm() {
       });
       setProcessors(newArray);
       window.print();
-      navigate("/processors");
+      navigate("/delivered");
     } else alert("Failed to deliver the processor , please try again");
   }
 
