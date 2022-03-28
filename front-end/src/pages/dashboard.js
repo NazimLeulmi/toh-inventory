@@ -321,7 +321,7 @@ function Dashboard() {
             <Box>
               <BoxIcon className="material-icons">&#xe023;</BoxIcon>
               <BoxHeader>TOTAL</BoxHeader>
-              <BoxNumber>20</BoxNumber>
+              <BoxNumber>{processors && processors.length}</BoxNumber>
             </Box>
           </BoxesContainer>
         </FlexContainer>

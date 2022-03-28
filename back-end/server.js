@@ -129,7 +129,7 @@ app.post("/deliver", async (req, res) => {
     const updated = await models.ProcessorModel.findByIdAndUpdate(req.body.id, {
       delivery: {
         delivered: true,
-        insurance: req.body.insurance.value,
+        insurance: req.body.insurance,
         patient: req.body.patient,
         institution: req.body.institution,
         delivery_date: req.body.delivery_date,
