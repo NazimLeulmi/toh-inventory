@@ -69,3 +69,4 @@ input[type=password]::-ms-clear
 }
 
 @media print { html, body { height: initial !important; overflow: initial !important; }}
+@page {margin-top:0;margin-bottom:0}

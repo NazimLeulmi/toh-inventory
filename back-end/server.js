@@ -134,7 +134,7 @@ app.post("/deliver", async (req, res) => {
         institution: req.body.institution,
         delivery_date: req.body.delivery_date,
         received_by: req.body.received_by,
-        audiologist: req.body.audiologist.value,
+        audiologist: req.body.audiologist,
         file_number: req.body.file_number,
         d_number: req.body.d_number,
         lpo: req.body.lpo,

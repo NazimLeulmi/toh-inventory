@@ -202,9 +202,9 @@ function Delivered() {
                 <Data>SERIAL #</Data>
                 <Data>FROM</Data>
                 <Data>DATE</Data>
-                <Data>EMPLOYEE</Data>
+                <Data>EMP</Data>
                 <Data>PATIENT</Data>
-                <Data>INST</Data>
+                <Data>INSTITUTION</Data>
                 <Data>FILE #</Data>
                 <Data>Delivery #</Data>
               </TableRow> :
@@ -213,9 +213,9 @@ function Delivered() {
                 <Data>SERIAL #</Data>
                 <Data>FROM</Data>
                 <Data>DATE</Data>
-                <Data>EMPLOYEE</Data>
+                <Data>EMP</Data>
                 <Data>PATIENT</Data>
-                <Data>INST</Data>
+                <Data>INSTITUTION</Data>
                 <Data>LPO</Data>
                 <Data>LPO DATE</Data>
                 <Data>MRN</Data>
