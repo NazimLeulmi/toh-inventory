@@ -10,6 +10,7 @@ import DeliveryForm from "./pages/delivery";
 import axios from "axios";
 import Delivered from "./pages/delivered";
 import Update from "./pages/update";
+import Stock from "./pages/stock";
 // Send cookies with http requests
 axios.defaults.withCredentials = true
 
@@ -36,6 +37,7 @@ function App() {
             <Route exact path="/delivery" element={<DeliveryForm />} />
             <Route exact path="/delivered" element={<Delivered />} />
             <Route exact path="/update" element={<Update />} />
+            <Route exact path="/stock" element={<Stock />} />
           </Routes>
         </ProcessorsContext.Provider>
       </AuthContext.Provider>

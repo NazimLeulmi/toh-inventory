@@ -128,11 +128,8 @@ function Delivered() {
         }
         else alert("Couldn't fetch the processors from the database");
       } else {
-        console.log(processors, "processors");
         const filtered = await processors.filter(e => e.delivery.delivered === true);
-        console.log(filtered, "first filter");
         const doubleFiltered = await filtered.filter(x => x.delivery.insurance === "C1/C2");
-        console.log(doubleFiltered, "second filter");
         setDelivered(filtered);
         setFiltered(doubleFiltered);
       }

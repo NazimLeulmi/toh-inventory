@@ -99,14 +99,9 @@ const DeliverBtn = styled.div`
     padding:15px;
     cursor: pointer;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-    margin-left:16px;
+    margin-left:auto;
 `;
 
-const UpdateBtn = styled(DeliverBtn)`
-  background-color: papayawhip;
-  color:black;
-  margin-left:auto;
-`;
 
 const PrintText = styled.p`
     font-size:20px;
@@ -115,10 +110,11 @@ const PrintText = styled.p`
 `;
 
 
-function Processors() {
+function Stock() {
   const { processors, setProcessors } = React.useContext(ProcessorsContext);
   const [selected, setSelected] = React.useState(null);
   const { auth, setAuth } = React.useContext(AuthContext);
+  const [filtered, setFiltered] = React.useState(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -127,9 +123,15 @@ function Processors() {
       if (processors === null) {
         const response = await axios.get("http://localhost:8888/processors");
         const { data } = response;
-        if (data.processors) setProcessors(data.processors);
-      } else {
-        setProcessors(processors);
+        if (data.processors) {
+          setProcessors(data.processors);
+          const stock = await data.processors.filter(f => f.delivery.delivered === false);
+          setFiltered(stock);
+        }
+      }
+      else {
+        const stock = await processors.filter(f => f.delivery.delivered === false);
+        setFiltered(stock);
       }
     } catch (error) { console.log(error) }
   }
@@ -160,9 +162,6 @@ function Processors() {
   function deliver() {
     navigate("/delivery", { state: { processor: selected } })
   }
-  function edit() {
-    navigate("/update", { state: { processor: selected } })
-  }
 
   React.useEffect(() => {
     checkAuth();
@@ -180,9 +179,6 @@ function Processors() {
         <Bar />
         <Header>
           <TableTitle>Processors Table</TableTitle>
-          <UpdateBtn onClick={() => edit()}>
-            <PrintText>EDIT</PrintText>
-          </UpdateBtn>
           <DeliverBtn onClick={() => deliver()}>
             <PrintText>DELIVER</PrintText>
           </DeliverBtn>
@@ -202,7 +198,7 @@ function Processors() {
             </TableRow>
           </TableHead>
           <tbody>
-            {processors && processors.map(processor => (
+            {filtered && filtered.map(processor => (
               <TableRow key={processor._id} name="data"
                 onClick={() => selectRow(processor)}
                 selected={selected ? selected._id : null}
@@ -224,4 +220,4 @@ function Processors() {
 }
 
 
-export default Processors;
+export default Stock;

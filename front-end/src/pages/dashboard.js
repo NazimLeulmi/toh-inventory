@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import Select from 'react-select';
 import axios from 'axios';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import SideNav from './sidenav';
 import { FormBtn, FormBtnText } from './signin';
 import TopBar from './topbar';
@@ -44,7 +44,7 @@ export const FormHeader = styled.h1`
     align-self: center;
 `;
 
-const Box = styled.div`
+const Box = styled(Link)`
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     width:225px;
     height:225px;
@@ -56,6 +56,7 @@ const Box = styled.div`
     border-radius: 5px;
     margin-bottom:25px;
     cursor: pointer;
+    text-decoration: none;
     :hover{
         box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
         transform: scale(1.05);
@@ -179,13 +180,15 @@ function Dashboard() {
   const [received, setReceived] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [errors, setErrors] = React.useState({});
+  const [stock, setStock] = React.useState(0);
+  const [delivered, setDelivered] = React.useState(0);
   const navigate = useNavigate();
   const location = useLocation();
   const { auth, setAuth } = useContext(AuthContext);
   const { processors, setProcessors } = useContext(ProcessorsContext);
   const processorOptions = [
     { value: 'Cocklear N7', label: 'Cocklear N7' },
-    { value: 'Cocklear Kanso-2', label: 'Cocklear Kanso-2' },
+    { value: 'Cochlear Kanso-2', label: 'Cochlear Kanso-2' },
     { value: 'Baha-6 Max Sound', label: 'Baha-6 Max Sound' },
     { value: 'Osia Implant', label: 'Osia Implant' },
     { value: 'AB Naida C1 Q90', label: 'AB Naida C1 Q90' },
@@ -232,8 +235,15 @@ function Dashboard() {
         const { data } = response;
         if (data.processors) setProcessors(data.processors);
         else alert("Couldn't fetch the processors from the database");
+        const filtered = await data.processors.filter(p => p.delivery.delivered === true);
+        setDelivered(filtered.length);
+        setStock(data.processors.length - filtered.length);
+      } else {
+        const filtered = await processors.filter(p => p.delivery.delivered === true);
+        setDelivered(filtered.length);
+        setStock(processors.length - filtered.length);
       }
-    } catch (error) { console.log(error) }
+    } catch (err) { console.log(err) }
   }
 
   useEffect(() => {
@@ -308,17 +318,17 @@ function Dashboard() {
             </Btn>
           </Form>
           <BoxesContainer>
-            <Box>
+            <Box to="/delivered">
               <BoxIcon className="material-icons">&#xe558;</BoxIcon>
               <BoxHeader>DELIVERED</BoxHeader>
-              <BoxNumber>16</BoxNumber>
+              <BoxNumber>{delivered}</BoxNumber>
             </Box>
-            <Box>
+            <Box to="/stock">
               <BoxIcon className="material-icons">&#xe179;</BoxIcon>
               <BoxHeader>STOCK</BoxHeader>
-              <BoxNumber>4</BoxNumber>
+              <BoxNumber>{stock}</BoxNumber>
             </Box>
-            <Box>
+            <Box to="/processors">
               <BoxIcon className="material-icons">&#xe023;</BoxIcon>
               <BoxHeader>TOTAL</BoxHeader>
               <BoxNumber>{processors && processors.length}</BoxNumber>

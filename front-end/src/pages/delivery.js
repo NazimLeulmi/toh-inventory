@@ -130,6 +130,7 @@ function DeliveryForm() {
     return today;
   }
 
+
   async function deliver() {
     const delivery = {
       delivered: true, insurance: insurance ? insurance.value : "",
