@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Label, Input, InputContainer } from './dashboard';
 import LogoSvg from '../assets/logo.svg';
 import Select from 'react-select';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ProcessorsContext } from '../App';
+import { AuthContext, ProcessorsContext } from '../App';
 
 
 const TopBar = styled.div`
@@ -113,10 +113,11 @@ function DeliveryForm() {
   const [lpo, setLpo] = React.useState("");
   const [lpoDate, setLpoDate] = React.useState("");
   const [audiologist, setAudiologist] = React.useState("");
-  const [date, setDate] = React.useState(getDate());
+  const [date] = React.useState(getDate());
   const location = useLocation();
   const { processor } = location.state;
   const navigate = useNavigate();
+  const { auth, setAuth } = React.useContext(AuthContext);
 
   function getDate() {
     let today = new Date();
@@ -152,6 +153,21 @@ function DeliveryForm() {
   }
 
 
+  React.useEffect(() => {
+    async function checkAuth() {
+      try {
+        if (auth === null) {
+          const response = await axios.get("http://localhost:8888/check-auth");
+          const { data } = response;
+          if (data.success === true) setAuth(data.user);
+          else navigate("/");
+        }
+      } catch (error) { console.log(error) }
+    }
+    checkAuth();
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+
   return (
     <Container>
       <TopBar>
@@ -177,7 +193,7 @@ function DeliveryForm() {
             placeholder="ENTER THE PATIENT'S NAME"
           />
         </InputContainer>
-        {insurance.value == "C1/C2" ?
+        {insurance.value === "C1/C2" ?
           <InputContainer>
             <Label>D-NUMBER</Label>
             <Input type="text"

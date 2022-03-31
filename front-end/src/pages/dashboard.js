@@ -219,39 +219,44 @@ function Dashboard() {
     catch (err) { console.log(err) }
   }
 
-  async function checkAuth() {
-    try {
-      const response = await axios.get("http://localhost:8888/check-auth");
-      const { data } = response;
-      if (data.success === true) setAuth(data.user);
-      else navigate("/");
-    } catch (error) { console.log(error) }
-  }
-
-  async function getProcessors() {
-    try {
-      if (processors === null) {
-        const response = await axios.get("http://localhost:8888/processors");
-        const { data } = response;
-        if (data.processors) setProcessors(data.processors);
-        else alert("Couldn't fetch the processors from the database");
-        const filtered = await data.processors.filter(p => p.delivery.delivered === true);
-        setDelivered(filtered.length);
-        setStock(data.processors.length - filtered.length);
-      } else {
-        const filtered = await processors.filter(p => p.delivery.delivered === true);
-        setDelivered(filtered.length);
-        setStock(processors.length - filtered.length);
-      }
-    } catch (err) { console.log(err) }
-  }
 
   useEffect(() => {
+    async function checkAuth() {
+      try {
+        if (auth === null) {
+          const response = await axios.get("http://localhost:8888/check-auth");
+          const { data } = response;
+          if (data.success === true) setAuth(data.user);
+          else navigate("/");
+        }
+      } catch (error) { console.log(error) }
+    }
     checkAuth();
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
+    async function getProcessors() {
+      try {
+        if (processors === null) {
+          console.log("Fetching Processors");
+          const response = await axios.get("http://localhost:8888/processors");
+          const { data } = response;
+          if (data.processors) setProcessors(data.processors);
+          else alert("Couldn't fetch the processors from the database");
+          const filtered = await data.processors.filter(p => p.delivery.delivered === true);
+          setDelivered(filtered.length);
+          setStock(data.processors.length - filtered.length);
+        } else {
+          console.log("Processors are available");
+          const filtered = await processors.filter(p => p.delivery.delivered === true);
+          setDelivered(filtered.length);
+          setStock(processors.length - filtered.length);
+        }
+      } catch (err) { console.log(err) }
+    }
+
+
     getProcessors();
-  }, [])
+  }, [])// eslint-disable-line react-hooks/exhaustive-deps
 
 
 

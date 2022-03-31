@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import LogoSvg from '../assets/logo.svg';
+import { AuthContext } from '../App';
 
 
 
@@ -45,10 +46,11 @@ const UserName = styled.p`
 
 
 function Bar() {
+    const { auth, setAuth } = React.useContext(AuthContext);
     return (
         <TopBar>
             <Logo src={LogoSvg} />
-            <UserName>Rayan Leulmi</UserName>
+            <UserName>{auth && auth.firstName} {auth && auth.lastName}</UserName>
             <User><UserIcon className="material-icons">&#xe7fd;</UserIcon></User>
         </TopBar>
     )

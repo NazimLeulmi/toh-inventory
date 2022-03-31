@@ -101,7 +101,6 @@ export const selectStyles = {
 
 function Delivered() {
   const { processors, setProcessors } = React.useContext(ProcessorsContext);
-  const [delivered, setDelivered] = React.useState(null);
   const [insurance, setInsurance] = React.useState({ value: "C1/C2", label: "C1/C2" });
   const [filtered, setFiltered] = React.useState([]);
   const { auth, setAuth } = React.useContext(AuthContext);
@@ -114,43 +113,15 @@ function Delivered() {
   ]
 
 
-  async function getProcessors() {
-    try {
-      if (processors === null) {
-        const response = await axios.get("http://localhost:8888/processors");
-        const { data } = response;
-        if (data.processors) {
-          setProcessors(data.processors);
-          const filtered = await data.processors.filter(e => e.delivery.delivered === true);
-          const doubleFiltered = await filtered.filter(x => x.delivery.insurance === "C1/C2");
-          setDelivered(filtered);
-          setFiltered(doubleFiltered);
-        }
-        else alert("Couldn't fetch the processors from the database");
-      } else {
-        const filtered = await processors.filter(e => e.delivery.delivered === true);
-        const doubleFiltered = await filtered.filter(x => x.delivery.insurance === "C1/C2");
-        setDelivered(filtered);
-        setFiltered(doubleFiltered);
-      }
-    } catch (error) { console.log(error) }
-  }
+
 
   function handlePrint() {
-    const doc = new jsPDF();
-    doc.autoTable({ html: '#processors-table', theme: "grid", tableWidth: 'auto', margin: { right: 2, left: 2 } })
+    const doc = new jsPDF('landscape');
+    doc.autoTable({ html: '#processors-table', theme: "grid", tableWidth: 'auto', margin: 2 })
     doc.save('delivered.pdf');
   }
 
-  async function checkAuth() {
-    try {
-      const response = await axios.get("http://localhost:8888/check-auth");
-      const { data } = response;
-      if (data.success === false) {
-        setAuth(false); navigate("/");
-      }
-    } catch (error) { console.log(error) }
-  }
+
 
   async function handleInsuranceChange() {
     if (insurance.value === "C1/C2") {
@@ -167,12 +138,42 @@ function Delivered() {
 
 
   React.useEffect(() => {
+    async function checkAuth() {
+      try {
+        if (auth === null) {
+          const response = await axios.get("http://localhost:8888/check-auth");
+          const { data } = response;
+          if (data.success === true) setAuth(data.user);
+          else navigate("/");
+        }
+      } catch (error) { console.log(error) }
+    }
     checkAuth();
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
 
   React.useEffect(() => {
+    async function getProcessors() {
+      try {
+        if (processors === null) {
+          const response = await axios.get("http://localhost:8888/processors");
+          const { data } = response;
+          if (data.processors) {
+            setProcessors(data.processors);
+            const filtered = await data.processors.filter(e => e.delivery.delivered === true);
+            const doubleFiltered = await filtered.filter(x => x.delivery.insurance === "C1/C2");
+            setFiltered(doubleFiltered);
+          }
+          else alert("Couldn't fetch the processors from the database");
+        } else {
+          const filtered = await processors.filter(e => e.delivery.delivered === true);
+          const doubleFiltered = await filtered.filter(x => x.delivery.insurance === "C1/C2");
+          setFiltered(doubleFiltered);
+        }
+      } catch (error) { console.log(error) }
+    }
     getProcessors();
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Container>

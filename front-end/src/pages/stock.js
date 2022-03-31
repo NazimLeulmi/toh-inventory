@@ -118,39 +118,14 @@ function Stock() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  async function getProcessors() {
-    try {
-      if (processors === null) {
-        const response = await axios.get("http://localhost:8888/processors");
-        const { data } = response;
-        if (data.processors) {
-          setProcessors(data.processors);
-          const stock = await data.processors.filter(f => f.delivery.delivered === false);
-          setFiltered(stock);
-        }
-      }
-      else {
-        const stock = await processors.filter(f => f.delivery.delivered === false);
-        setFiltered(stock);
-      }
-    } catch (error) { console.log(error) }
-  }
+
 
   function handlePrint() {
-    const doc = new jsPDF();
-    doc.autoTable({ html: '#processors-table', theme: "grid" })
+    const doc = new jsPDF("landscape");
+    doc.autoTable({ html: '#processors-table', theme: "grid", margin: 2 })
     doc.save('table.pdf');
   }
 
-  async function checkAuth() {
-    try {
-      const response = await axios.get("http://localhost:8888/check-auth");
-      const { data } = response;
-      if (data.success === false) {
-        setAuth(false); navigate("/");
-      }
-    } catch (error) { console.log(error) }
-  }
 
   async function selectRow(processor) {
     if (selected && processor._id === selected._id) setSelected(null);
@@ -164,12 +139,39 @@ function Stock() {
   }
 
   React.useEffect(() => {
+    async function checkAuth() {
+      try {
+        if (auth === null) {
+          const response = await axios.get("http://localhost:8888/check-auth");
+          const { data } = response;
+          if (data.success === true) setAuth(data.user);
+          else navigate("/");
+        }
+      } catch (error) { console.log(error) }
+    }
     checkAuth();
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   React.useEffect(() => {
+    async function getProcessors() {
+      try {
+        if (processors === null) {
+          const response = await axios.get("http://localhost:8888/processors");
+          const { data } = response;
+          if (data.processors) {
+            setProcessors(data.processors);
+            const stock = await data.processors.filter(f => f.delivery.delivered === false);
+            setFiltered(stock);
+          }
+        }
+        else {
+          const stock = await processors.filter(f => f.delivery.delivered === false);
+          setFiltered(stock);
+        }
+      } catch (error) { console.log(error) }
+    }
     getProcessors();
-  }, [])
+  }, [])// eslint-disable-line react-hooks/exhaustive-deps
 
 
   return (
