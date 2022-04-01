@@ -54,28 +54,10 @@ function Update() {
     { value: 'NO', label: 'NO' },
   ]
 
-  async function checkAuth() {
-    try {
-      const response = await axios.get("http://localhost:8888/check-auth");
-      const { data } = response;
-      if (data.success === true) setAuth(data.user);
-      else navigate("/");
-    } catch (error) { console.log(error) }
-  }
 
-  async function getProcessors() {
-    try {
-      if (processors === null) {
-        const response = await axios.get("http://localhost:8888/processors");
-        const { data } = response;
-        if (data.processors) setProcessors(data.processors);
-        else alert("Couldn't fetch the processors from the database");
-      }
-    } catch (error) { console.log(error) }
-  }
   async function updateProcessor() {
     try {
-      const response = await axios.post("http://localhost:8888/update", {
+      const response = await axios.post("http://192.168.1.131:8888/update", {
         processor_type: type ? type.value : "",
         received_from: from ? from.value : "",
         description: description,
@@ -99,13 +81,35 @@ function Update() {
   }
 
 
-
-  React.useEffect(() => {
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        if (auth === null) {
+          const response = await axios.get("http://192.168.1.131:8888/check-auth");
+          const { data } = response;
+          if (data.success === true) setAuth(data.user);
+          else navigate("/");
+        }
+      } catch (error) { console.log(error) }
+    }
     checkAuth();
-  }, [])
-  React.useEffect(() => {
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    async function getProcessors() {
+      try {
+        if (processors === null) {
+          console.log("Fetching Processors");
+          const response = await axios.get("http://192.168.1.131:8888/processors");
+          const { data } = response;
+          if (data.processors) setProcessors(data.processors);
+          else alert("Couldn't fetch the processors from the database");
+          setStock(data.processors.length - filtered.length);
+        }
+      } catch (err) { console.log(err) }
+    }
     getProcessors();
-  }, [])
+  }, [])// eslint-disable-line react-hooks/exhaustive-deps
 
   React.useEffect(() => {
     if (location.state.processor) {
@@ -120,7 +124,7 @@ function Update() {
       })
     }
     else navigate("/processors");
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
 
   return (

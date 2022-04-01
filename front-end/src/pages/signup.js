@@ -2,7 +2,7 @@ import React from "react";
 import DocSvg from '../assets/doctors.svg';
 import LogoSvg from '../assets/logo.svg';
 import {
-  Container, Introduction, Doctors, Header, Paragraph,
+  Introduction, Doctors, Header, Paragraph,
   Form, Logo, InputContainer, Label, Input, InputIcon,
   FormHeader, FormBtn, FormBtnText, Text, FormLink
 } from './signin';
@@ -31,7 +31,7 @@ function SignUp() {
   async function postUserData() {
     console.log("Posting User Data");
     try {
-      const response = await axios.post("http://localhost:8888/signup", {
+      const response = await axios.post("http://192.168.1.131:8888/signup", {
         first_name: firstName, last_name: lastName, email: email,
         password: password, passwordc: passwordc
       })
@@ -41,18 +41,7 @@ function SignUp() {
 
     } catch (error) { console.log(error) }
   }
-  async function checkAuth() {
-    try {
-      const response = await axios.get("http://localhost:8888/check-auth");
-      const { data } = response;
-      console.log(data)
-      if (data.success === true) navigate("/dashboard");
-    } catch (error) { console.log(error) }
-  }
 
-  React.useEffect(() => {
-    checkAuth();
-  }, [])
   return (
     <>
       <Introduction>

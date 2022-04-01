@@ -72,7 +72,7 @@ function SideNav({ location }) {
     const navigate = useNavigate();
 
     async function signOut() {
-        const response = await axios.post("http://localhost:8888/signout");
+        const response = await axios.post("http://192.168.1.131:8888/signout");
         const { data } = response;
         if (data.success === true) setAuth(null); navigate("/");
     }

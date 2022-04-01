@@ -201,7 +201,7 @@ function Dashboard() {
 
   async function postProcessor() {
     try {
-      const response = await axios.post("http://localhost:8888/processors", {
+      const response = await axios.post("http://192.168.1.131:8888/processors", {
         processor_type: type ? type.value : "",
         received_from: from ? from.value : "",
         description: description,
@@ -224,7 +224,7 @@ function Dashboard() {
     async function checkAuth() {
       try {
         if (auth === null) {
-          const response = await axios.get("http://localhost:8888/check-auth");
+          const response = await axios.get("http://192.168.1.131:8888/check-auth");
           const { data } = response;
           if (data.success === true) setAuth(data.user);
           else navigate("/");
@@ -238,7 +238,7 @@ function Dashboard() {
       try {
         if (processors === null) {
           console.log("Fetching Processors");
-          const response = await axios.get("http://localhost:8888/processors");
+          const response = await axios.get("http://192.168.1.131:8888/processors");
           const { data } = response;
           if (data.processors) setProcessors(data.processors);
           else alert("Couldn't fetch the processors from the database");

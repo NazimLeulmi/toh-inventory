@@ -168,7 +168,7 @@ function SignIn() {
   async function postUserData() {
     console.log("Posting User Data");
     try {
-      const response = await axios.post("http://localhost:8888/signin", {
+      const response = await axios.post("http://192.168.1.131:8888/signin", {
         email: email, password: password
       })
       const { data } = response;
@@ -178,19 +178,23 @@ function SignIn() {
       }
     } catch (error) { console.log(error) }
   }
-  async function checkAuth() {
-    try {
-      const response = await axios.get("http://localhost:8888/check-auth");
-      const { data } = response;
-      if (data.success === true) {
-        setAuth(data.user); navigate("/dashboard"); return;
-      }
-    } catch (error) { console.log(error) }
-  }
+
 
   React.useEffect(() => {
+    async function checkAuth() {
+      try {
+        if (auth === null) {
+          const response = await axios.get("http://192.168.1.131:8888/check-auth");
+          const { data } = response;
+          if (data.success === true) {
+            setAuth(data.user); navigate("/dashboard"); return;
+          }
+        } else navigate("/dashboard");
+      } catch (error) { console.log(error) }
+    }
     checkAuth();
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <Container>
       <Introduction>

@@ -139,7 +139,7 @@ function DeliveryForm() {
       received_by: received, lpo: lpo, lpo_date: lpoDate, mrn: mrn, id: processor._id,
       file_number: fileNumber, d_number: dnumber, institution: institution
     }
-    const response = await axios.post("http://localhost:8888/deliver", delivery)
+    const response = await axios.post("http://192.168.1.131:8888/deliver", delivery)
     const { data } = response;
     if (data.success === true && data.processor) {
       const newArray = await processors.map(e => {
@@ -157,7 +157,7 @@ function DeliveryForm() {
     async function checkAuth() {
       try {
         if (auth === null) {
-          const response = await axios.get("http://localhost:8888/check-auth");
+          const response = await axios.get("http://192.168.1.131:8888/check-auth");
           const { data } = response;
           if (data.success === true) setAuth(data.user);
           else navigate("/");

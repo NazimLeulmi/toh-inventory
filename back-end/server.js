@@ -10,7 +10,7 @@ let app = express();
 
 
 app.use(cors({
-  origin: ["http://localhost:8888", "http://localhost:3000"],
+  origin: ["http://192.168.1.131:8888", "http://192.168.1.131:3000"],
   credentials: true
 }));
 app.use(express.json());
@@ -25,7 +25,7 @@ app.use(session({
 // Mongo Database Connection
 connectDB().catch(err => console.log(err));
 async function connectDB() {
-  await mongoose.connect('mongodb://localhost:27017/inventory');
+  await mongoose.connect('mongodb://192.168.1.131:27017/inventory');
   console.log("Connected to Mongo Database")
 }
 

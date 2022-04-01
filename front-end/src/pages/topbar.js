@@ -46,7 +46,7 @@ const UserName = styled.p`
 
 
 function Bar() {
-    const { auth, setAuth } = React.useContext(AuthContext);
+    const { auth } = React.useContext(AuthContext);
     return (
         <TopBar>
             <Logo src={LogoSvg} />

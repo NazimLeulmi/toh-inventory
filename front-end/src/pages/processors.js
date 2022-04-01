@@ -150,7 +150,7 @@ function Processors() {
     async function checkAuth() {
       try {
         if (auth === null) {
-          const response = await axios.get("http://localhost:8888/check-auth");
+          const response = await axios.get("http://192.168.1.131:8888/check-auth");
           const { data } = response;
           if (data.success === true) setAuth(data.user);
           else navigate("/");
@@ -164,7 +164,7 @@ function Processors() {
     async function getProcessors() {
       try {
         if (processors === null) {
-          const response = await axios.get("http://localhost:8888/processors");
+          const response = await axios.get("http://192.168.1.131:8888/processors");
           const { data } = response;
           if (data.processors) setProcessors(data.processors);
         } else {
