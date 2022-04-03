@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import {
   FormHeader, InputContainer, Label,
@@ -104,7 +104,6 @@ function Update() {
           const { data } = response;
           if (data.processors) setProcessors(data.processors);
           else alert("Couldn't fetch the processors from the database");
-          setStock(data.processors.length - filtered.length);
         }
       } catch (err) { console.log(err) }
     }

@@ -88,7 +88,7 @@ const PrintBtn = styled.div`
     margin-left:16px;
 
 `;
-const DeliverBtn = styled.div`
+const DeliverBtn = styled.button`
     height:50px;
     border-radius: 5px;
     display: flex;
@@ -100,11 +100,17 @@ const DeliverBtn = styled.div`
     cursor: pointer;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     margin-left:16px;
+    border:0;
 `;
 
 const UpdateBtn = styled(DeliverBtn)`
   background-color: papayawhip;
   color:black;
+  margin-left:16px;
+`;
+const DeleteBtn = styled(DeliverBtn)`
+  background-color: red;
+  color:white;
   margin-left:auto;
 `;
 
@@ -145,6 +151,19 @@ function Processors() {
   function edit() {
     navigate("/update", { state: { processor: selected } })
   }
+  async function deleteProcessor() {
+    try {
+      const response = await axios.post("http://192.168.1.131:8888/delete", { id: selected._id });
+      const { data } = response;
+      if (data.success === true) {
+        const filtered = await processors.filter(p => p._id !== selected._id);
+        setProcessors(filtered);
+      } else alert("Failed to delete the processor")
+
+    } catch (err) { console.log(err) }
+  }
+
+
 
   React.useEffect(() => {
     async function checkAuth() {
@@ -183,10 +202,13 @@ function Processors() {
         <Bar />
         <Header>
           <TableTitle>Processors Table</TableTitle>
-          <UpdateBtn onClick={() => edit()}>
+          <DeleteBtn onClick={() => deleteProcessor()} disabled={selected === null ? true : false}>
+            <PrintText>DELETE</PrintText>
+          </DeleteBtn>
+          <UpdateBtn onClick={() => edit()} disabled={selected === null ? true : false}>
             <PrintText>EDIT</PrintText>
           </UpdateBtn>
-          <DeliverBtn onClick={() => deliver()}>
+          <DeliverBtn onClick={() => deliver()} disabled={selected === null ? true : false}>
             <PrintText>DELIVER</PrintText>
           </DeliverBtn>
           <PrintBtn onClick={() => handlePrint()}>

@@ -187,7 +187,7 @@ function Dashboard() {
   const { auth, setAuth } = useContext(AuthContext);
   const { processors, setProcessors } = useContext(ProcessorsContext);
   const processorOptions = [
-    { value: 'Cocklear N7', label: 'Cocklear N7' },
+    { value: 'Cochlear N7', label: 'Cochlear N7' },
     { value: 'Cochlear Kanso-2', label: 'Cochlear Kanso-2' },
     { value: 'Baha-6 Max Sound', label: 'Baha-6 Max Sound' },
     { value: 'Osia Implant', label: 'Osia Implant' },

@@ -88,7 +88,7 @@ const PrintBtn = styled.div`
     margin-left:16px;
 
 `;
-const DeliverBtn = styled.div`
+const DeliverBtn = styled.button`
     height:50px;
     border-radius: 5px;
     display: flex;
@@ -100,6 +100,7 @@ const DeliverBtn = styled.div`
     cursor: pointer;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     margin-left:auto;
+    border:0;
 `;
 
 
@@ -181,7 +182,7 @@ function Stock() {
         <Bar />
         <Header>
           <TableTitle>Processors Table</TableTitle>
-          <DeliverBtn onClick={() => deliver()}>
+          <DeliverBtn onClick={() => deliver()} disabled={selected === null ? true : false}>
             <PrintText>DELIVER</PrintText>
           </DeliverBtn>
           <PrintBtn onClick={() => handlePrint()}>

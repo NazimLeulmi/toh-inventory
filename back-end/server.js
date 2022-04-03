@@ -10,7 +10,7 @@ let app = express();
 
 
 app.use(cors({
-  origin: ["http://192.168.1.131:8888", "http://192.168.1.131:3000"],
+  origin: ["http://192.168.1.131:8888", "http://192.168.1.131:3000", "http://192.168.1.131"],
   credentials: true
 }));
 app.use(express.json());
@@ -37,6 +37,7 @@ app.post("/signin", async (req, res) => {
   if (!user) return res.json({ isValid: false, errors: { email: "The user doesn't exist" } });
   const isCorrect = await bcrypt.compare(req.body.password, user.password);
   if (!isCorrect) return res.json({ isValid: false, errors: { password: "The password is invalid" } });
+  if(user.approved === false) return res.json({isValid:false , errors: { password:"The user has to be approved"}});
   // The user login data is correct
   req.session.userId = user._id;
   req.session.firstName = user.first_name;
@@ -166,5 +167,14 @@ app.post("/update", async (req, res) => {
     return res.json({ success: true, processor: updated });
   } catch (err) { console.log(err) }
 })
+
+app.post("/delete", async (req, res) => {
+  try {
+    const deleted = await models.ProcessorModel.findByIdAndDelete(req.body.id);
+    if (deleted) return res.json({ success: true, processor: deleted });
+    else return res.json({ success: false })
+  } catch (err) { console.log(err) }
+})
+
 
 app.listen(8888, () => console.log("Node.js server running on port 8888"));
